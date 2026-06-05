@@ -24,6 +24,7 @@ type ResultType = {
 
 export default function Home() {
   const [credits, setCredits] = useState<number | null>(null);
+  const [isPro, setIsPro] = useState(false);
 
   const { isSignedIn } = useUser();
 
@@ -41,6 +42,7 @@ export default function Home() {
       const data = await response.json();
 
       setCredits(data.credits);
+      setIsPro(data.isPro);
     };
 
     fetchCredits();
@@ -71,8 +73,6 @@ export default function Home() {
 
       setResult(data.result);
 
-      setCredits((prev) => (prev !== null ? prev - 1 : prev));
-
       toast.success("生成成功");
     } catch (error) {
       console.log(error);
@@ -84,22 +84,23 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-black text-white p-6">
-      <div className="max-w-4xl mx-auto">
+    <main className="min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-black p-6 text-white">
+      <div className="mx-auto max-w-4xl">
         <div className="mb-10">
           <div className="mb-10">
-            <div className="flex justify-end mb-6">
+            <div className="mb-6 flex justify-end">
               <Link
                 href="/pricing"
-                className="text-zinc-400 hover:text-white transition"
+                className="text-zinc-400 transition hover:text-white"
               >
                 Pricing
               </Link>
             </div>
-            <h1 className="text-5xl font-bold mb-3">AI LP Generator</h1>
-            <p className="text-zinc-400 mt-2">
-              残りクレジット:
-              {credits}
+            <h1 className="mb-3 text-5xl font-bold">AI LP Generator</h1>
+            <p className="mt-2 text-zinc-400">
+              {isPro
+                ? "✨ Proプラン利用中（無制限生成）"
+                : `残りクレジット: ${credits}`}
             </p>
           </div>
 
@@ -108,7 +109,7 @@ export default function Home() {
           </p>
         </div>
 
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card className="border-zinc-800 bg-zinc-900">
           <CardContent className="space-y-4 p-6">
             <Input
               placeholder="業種（例：パーソナルジム）"
@@ -145,7 +146,7 @@ export default function Home() {
             >
               {loading ? (
                 <div className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                   生成中...
                 </div>
               ) : credits === 0 ? (
@@ -158,35 +159,30 @@ export default function Home() {
         </Card>
 
         {result && (
-          <div className="space-y-6 mt-8">
-            <Card className="bg-zinc-800 border-zinc-700">
+          <div className="mt-8 space-y-6">
+            <Card className="border-zinc-700 bg-zinc-800">
               <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-2">Hero</h2>
-                <p className="text-white leading-7 text-lg">{result.hero}</p>
+                <h2 className="mb-2 text-xl font-bold">Hero</h2>
+                <p className="text-lg leading-7 text-white">{result.hero}</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-zinc-800 border-zinc-700">
+            <Card className="border-zinc-700 bg-zinc-800">
               <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-2">CTA</h2>
-                <p className="text-white leading-7 text-lg">{result.cta}</p>
+                <h2 className="mb-2 text-xl font-bold">CTA</h2>
+                <p className="text-lg leading-7 text-white">{result.cta}</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-zinc-800 border-zinc-700">
+            <Card className="border-zinc-700 bg-zinc-800">
               <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-2">Benefits</h2>
+                <h2 className="mb-2 text-xl font-bold">Benefits</h2>
 
                 <div className="space-y-2">
                   {result.benefits?.map((item, index) => (
                     <div
                       key={index}
-                      className="
-                      bg-zinc-700
-                      rounded-lg
-                      px-4
-                      py-3
-                    "
+                      className="rounded-lg bg-zinc-700 px-4 py-3"
                     >
                       {item}
                     </div>
@@ -195,15 +191,15 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="bg-zinc-800 border-zinc-700">
+            <Card className="border-zinc-700 bg-zinc-800">
               <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-2">Features</h2>
+                <h2 className="mb-2 text-xl font-bold">Features</h2>
 
-                <ul className="list-disc pl-5 space-y-2">
+                <ul className="list-disc space-y-2 pl-5">
                   {result.features.map((feature: string, index: number) => (
                     <li
                       key={index}
-                      className="bg-zinc-700 text-white rounded-lg px-4 py-3"
+                      className="rounded-lg bg-zinc-700 px-4 py-3 text-white"
                     >
                       {feature}
                     </li>
@@ -212,20 +208,15 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="bg-zinc-800 border-zinc-700">
+            <Card className="border-zinc-700 bg-zinc-800">
               <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-4">FAQ</h2>
+                <h2 className="mb-4 text-xl font-bold">FAQ</h2>
 
                 <div className="space-y-3">
                   {result.faq?.map((item, index) => (
                     <div
                       key={index}
-                      className="
-            bg-zinc-700
-            rounded-lg
-            px-4
-            py-3
-          "
+                      className="rounded-lg bg-zinc-700 px-4 py-3"
                     >
                       <p className="font-bold">Q. {item.question}</p>
 

@@ -14,6 +14,7 @@ import "./globals.css";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Toaster } from "sonner";
+import { auth } from "@clerk/nextjs/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,64 +31,52 @@ export const metadata: Metadata = {
   description: "OpenAIを活用したAI LPジェネレーター",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { userId } = await auth();
   return (
     <ClerkProvider>
       <html lang="ja">
         <body
-          className={`
-            ${geistSans.variable}
-            ${geistMono.variable}
-            antialiased
-            bg-black
-            text-white
-          `}
+          className={` ${geistSans.variable} ${geistMono.variable} bg-black text-white antialiased`}
         >
-          <header
-            className="
-              flex
-              justify-between
-              items-center
-              p-4
-              gap-4
-              border-b
-              border-zinc-800
-            "
-          >
+          <header className="flex items-center justify-between gap-4 border-b border-zinc-800 p-4">
             <Link href="/" className="text-xl font-bold">
               AI LP Generator
             </Link>
             <div className="flex items-center gap-6 text-zinc-400">
-              <Link href="/" className="hover:text-white transition">
+              <Link href="/" className="transition hover:text-white">
                 Home
               </Link>
 
-              <Link href="/history" className="hover:text-white transition">
+              <Link href="/history" className="transition hover:text-white">
                 History
               </Link>
 
-              <Link href="/pricing" className="hover:text-white transition">
+              <Link href="/pricing" className="transition hover:text-white">
                 Pricing
               </Link>
             </div>
-            <SignInButton>
-              <Button className="border-white cursor-pointer">ログイン</Button>
-            </SignInButton>
+            {userId ? (
+              <UserButton />
+            ) : (
+              <>
+                <SignInButton>
+                  <Button className="cursor-pointer border-white">
+                    ログイン
+                  </Button>
+                </SignInButton>
 
-            <SignUpButton>
-              <Button
-                className="border-white
-               cursor-pointer"
-              >
-                新規登録
-              </Button>
-            </SignUpButton>
-
-            <UserButton />
+                <SignUpButton>
+                  <Button className="cursor-pointer border-white">
+                    新規登録
+                  </Button>
+                </SignUpButton>
+              </>
+            )}
           </header>
 
           {children}

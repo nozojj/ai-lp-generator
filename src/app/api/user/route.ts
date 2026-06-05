@@ -28,6 +28,7 @@ export async function GET() {
 
     return NextResponse.json({
       credits: user.credits,
+      isPro: user.isPro,
     });
   } catch (error) {
     console.log(error);
