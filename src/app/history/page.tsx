@@ -1,17 +1,16 @@
 import DeleteButton from "@/components/delete-button";
+import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { PrismaClient } from "@prisma/client";
 
 import Link from "next/link";
 
-const prisma = new PrismaClient();
 
 export default async function HistoryPage() {
   const { userId } = await auth();
 
   if (!userId) {
     return (
-      <main className="min-h-screen bg-black text-white p-8">
+      <main className="min-h-screen bg-black p-8 text-white">
         ログインしてください
       </main>
     );
@@ -25,7 +24,7 @@ export default async function HistoryPage() {
 
   if (!user) {
     return (
-      <main className="min-h-screen bg-black text-white p-8">
+      <main className="min-h-screen bg-black p-8 text-white">
         ユーザーが存在しません
       </main>
     );
@@ -42,19 +41,12 @@ export default async function HistoryPage() {
   });
 
   return (
-    <main className="min-h-screen bg-black text-white p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">生成履歴</h1>
+    <main className="min-h-screen bg-black p-8 text-white">
+      <div className="mx-auto max-w-4xl">
+        <h1 className="mb-8 text-4xl font-bold">生成履歴</h1>
         {data.length === 0 && (
-          <div
-            className="
-      bg-zinc-900
-      rounded-xl
-      p-10
-      text-center
-    "
-          >
-            <h2 className="text-2xl font-bold mb-3">履歴がありません</h2>
+          <div className="rounded-xl bg-zinc-900 p-10 text-center">
+            <h2 className="mb-3 text-2xl font-bold">履歴がありません</h2>
 
             <p className="text-zinc-400">LPを生成するとここに表示されます</p>
           </div>
@@ -64,19 +56,19 @@ export default async function HistoryPage() {
             {data.map((item) => (
               <div key={item.id}>
                 <Link href={`/history/${item.id}`}>
-                  <div
-                    className="
-            bg-zinc-900
-            rounded-xl
-            p-6
-            hover:bg-zinc-800
-            transition
-            cursor-pointer
-          "
-                  >
-                    <p className="text-zinc-400 mb-2">{item.business}</p>
+                  <div className="cursor-pointer rounded-xl bg-zinc-900 p-6 transition hover:bg-zinc-800">
+                    <p className="mb-2 text-zinc-400">{item.business}</p>
+                    <p className="mt-2 text-sm text-zinc-500">
+                      {new Date(item.createdAt).toLocaleString("ja-JP", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
 
-                    <h2 className="text-xl font-bold mb-4">{item.hero}</h2>
+                    <h2 className="mb-4 text-xl font-bold">{item.hero}</h2>
 
                     <p className="mb-4 text-zinc-300">{item.cta}</p>
 
@@ -85,11 +77,7 @@ export default async function HistoryPage() {
                         item.features.map((feature, index) => (
                           <div
                             key={index}
-                            className="
-                    bg-zinc-800
-                    p-3
-                    rounded-lg
-                  "
+                            className="rounded-lg bg-zinc-800 p-3"
                           >
                             {String(feature)}
                           </div>

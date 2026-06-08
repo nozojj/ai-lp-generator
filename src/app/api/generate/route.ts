@@ -1,9 +1,8 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-
-const prisma = new PrismaClient();
+import axios from "axios";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -34,7 +33,6 @@ export async function POST(req: Request) {
     console.log("isPro:", user.isPro);
     console.log("credits:", user.credits);
     console.log("clerkId:", user.clerkId);
-
 
     if (!user.isPro && user.credits <= 0) {
       return NextResponse.json({ error: "クレジット不足" }, { status: 400 });
@@ -93,6 +91,55 @@ faqにはユーザーが気になりそうな質問と回答を3個作成して�
 
     console.log(parsed);
 
+    const imagePromptResponse = await client.chat.completions.create({
+      model: "gpt-4.1-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "Create only a detailed English prompt for a professional landing page hero image. No text, no logo, photorealistic, advertising photography.",
+        },
+        {
+          role: "user",
+          content: `
+        Business: ${body.business}
+        Target: ${body.target}
+        Atmosphere: ${body.atmosphere}
+
+        Generate an English prompt.
+        `,
+        },
+      ],
+    });
+
+    const imagePrompt = imagePromptResponse.choices[0].message.content || "";
+
+    console.log("imagePrompt:", imagePrompt);
+
+    const imageResponse = await axios.postForm(
+      "https://api.stability.ai/v2beta/stable-image/generate/core",
+      {
+        prompt: imagePrompt,
+        output_format: "png",
+      },
+      {
+        validateStatus: undefined,
+        responseType: "arraybuffer",
+        headers: {
+          Authorization: `Bearer ${process.env.STABILITY_API_KEY}`,
+          Accept: "image/*",
+        },
+      },
+    );
+
+    console.log("status:", imageResponse.status);
+
+    console.log("image length:", imageResponse.data.length);
+
+    const imageBase64 = Buffer.from(imageResponse.data).toString("base64");
+
+    const imageUrl = `data:image/png;base64,${imageBase64}`;
+
     await prisma.generation.create({
       data: {
         userId: user.id,
@@ -107,6 +154,7 @@ faqにはユーザーが気になりそうな質問と回答を3個作成して�
         features: parsed.features,
         benefits: parsed.benefits,
         faq: parsed.faq,
+        imageUrl,
       },
     });
 

@@ -1,13 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-
 import { NextResponse } from "next/server";
 
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET() {
   try {
     const { userId } = await auth();
 
@@ -31,38 +27,16 @@ export async function DELETE(
       );
     }
 
-    const { id } = await params;
-
-    const generation =
-      await prisma.generation.findUnique({
-        where: {
-          id,
-        },
-      });
-
-    if (!generation) {
-      return NextResponse.json(
-        { error: "Not found" },
-        { status: 404 }
-      );
-    }
-
-    if (generation.userId !== user.id) {
-      return NextResponse.json(
-        { error: "Forbidden" },
-        { status: 403 }
-      );
-    }
-
-    await prisma.generation.delete({
+    const generations = await prisma.generation.findMany({
       where: {
-        id,
+        userId: user.id,
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
 
-    return NextResponse.json({
-      success: true,
-    });
+    return NextResponse.json(generations);
   } catch (error) {
     console.log(error);
 

@@ -35,8 +35,10 @@ model Generation {
   hero     String
   cta      String
   features Json
-  faq Json?
+  faq      Json?
   benefits Json?
+
+  imageUrl String?
 
   createdAt DateTime @default(now())
 }

@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
 
-const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   console.log("Webhook hit");

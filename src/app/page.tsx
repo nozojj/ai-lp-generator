@@ -161,9 +161,15 @@ export default function Home() {
         {result && (
           <div className="mt-8 space-y-6">
             <Card className="border-zinc-700 bg-zinc-800">
-              <CardContent className="p-6">
-                <h2 className="mb-2 text-xl font-bold">Hero</h2>
-                <p className="text-lg leading-7 text-white">{result.hero}</p>
+              <CardContent className="p-10 text-center">
+                <h1 className="text-4xl font-bold">{result.hero}</h1>
+
+                <p className="mt-6 text-zinc-300">
+                  {target}向けの
+                  {business}
+                </p>
+
+                <Button className="mt-8">{result.cta}</Button>
               </CardContent>
             </Card>
 
@@ -174,39 +180,24 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="border-zinc-700 bg-zinc-800">
-              <CardContent className="p-6">
-                <h2 className="mb-2 text-xl font-bold">Benefits</h2>
+            <div className="grid gap-4 md:grid-cols-3">
+              {result.benefits.map((item, index) => (
+                <Card key={index}>
+                  <CardContent className="p-4">{item}</CardContent>
+                </Card>
+              ))}
+            </div>
 
-                <div className="space-y-2">
-                  {result.benefits?.map((item, index) => (
-                    <div
-                      key={index}
-                      className="rounded-lg bg-zinc-700 px-4 py-3"
-                    >
-                      {item}
-                    </div>
-                  ))}
+            <div className="space-y-4">
+              {result.features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="rounded-xl border border-zinc-700 p-4"
+                >
+                  ✓ {feature}
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-zinc-700 bg-zinc-800">
-              <CardContent className="p-6">
-                <h2 className="mb-2 text-xl font-bold">Features</h2>
-
-                <ul className="list-disc space-y-2 pl-5">
-                  {result.features.map((feature: string, index: number) => (
-                    <li
-                      key={index}
-                      className="rounded-lg bg-zinc-700 px-4 py-3 text-white"
-                    >
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
+              ))}
+            </div>
 
             <Card className="border-zinc-700 bg-zinc-800">
               <CardContent className="p-6">
