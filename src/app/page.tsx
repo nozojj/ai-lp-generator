@@ -10,6 +10,7 @@ import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type ResultType = {
   hero: string;
@@ -23,6 +24,8 @@ type ResultType = {
 };
 
 export default function Home() {
+  const router = useRouter();
+
   const [credits, setCredits] = useState<number | null>(null);
   const [isPro, setIsPro] = useState(false);
 
@@ -71,9 +74,9 @@ export default function Home() {
 
       const data = await response.json();
 
-      setResult(data.result);
-
       toast.success("生成成功");
+
+      router.push(`/history/${data.id}`);
     } catch (error) {
       console.log(error);
 
@@ -87,25 +90,31 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-black p-6 text-white">
       <div className="mx-auto max-w-4xl">
         <div className="mb-10">
-          <div className="mb-10">
-            <div className="mb-6 flex justify-end">
-              <Link
-                href="/pricing"
-                className="text-zinc-400 transition hover:text-white"
-              >
-                Pricing
-              </Link>
-            </div>
-            <h1 className="mb-3 text-5xl font-bold">AI LP Generator</h1>
-            <p className="mt-2 text-zinc-400">
-              {isPro
-                ? "✨ Proプラン利用中（無制限生成）"
-                : `残りクレジット: ${credits}`}
-            </p>
+          <h1 className="mb-3 text-5xl font-bold">AI LP Generator</h1>
+          <div className="mb-6 flex justify-end">
+            <Link
+              href="/pricing"
+              className="text-zinc-400 transition hover:text-white"
+            >
+              Pricing
+            </Link>
+          </div>
+
+          <div className="mt-2 text-zinc-400">
+            {isPro ? (
+              <>
+                <p>✨ Proプラン利用中（無制限生成）</p>
+                <p>保有クレジット: {credits}</p>
+              </>
+            ) : credits === null ? (
+              "クレジット確認中..."
+            ) : (
+              `残りクレジット: ${credits}`
+            )}
           </div>
 
           <p className="text-zinc-400">
-            数秒でLP構成を生成。 OpenAIを活用したAI LPジェネレーター
+            数秒でLP構成を生成。OpenAIを活用したAI LPジェネレーター
           </p>
         </div>
 
@@ -138,6 +147,7 @@ export default function Home() {
               disabled={
                 !isSignedIn ||
                 loading ||
+                credits === null ||
                 !business ||
                 !target ||
                 !atmosphere ||
@@ -147,8 +157,12 @@ export default function Home() {
               {loading ? (
                 <div className="flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  生成中...
+                  AIでLPと画像を生成中...
                 </div>
+              ) : !isSignedIn ? (
+                "ログインしてください"
+              ) : credits === null ? (
+                "確認中..."
               ) : credits === 0 ? (
                 "クレジット不足"
               ) : (

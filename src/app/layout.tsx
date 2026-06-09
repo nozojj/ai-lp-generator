@@ -2,19 +2,15 @@ import type { Metadata } from "next";
 
 import {
   ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  UserButton,
 } from "@clerk/nextjs";
 
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Toaster } from "sonner";
-import { auth } from "@clerk/nextjs/server";
+import AuthButtons from "@/components/auth-button";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +32,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { userId } = await auth();
   return (
     <ClerkProvider>
       <html lang="ja">
@@ -60,23 +55,7 @@ export default async function RootLayout({
                 Pricing
               </Link>
             </div>
-            {userId ? (
-              <UserButton />
-            ) : (
-              <>
-                <SignInButton>
-                  <Button className="cursor-pointer border-white">
-                    ログイン
-                  </Button>
-                </SignInButton>
-
-                <SignUpButton>
-                  <Button className="cursor-pointer border-white">
-                    新規登録
-                  </Button>
-                </SignUpButton>
-              </>
-            )}
+            <AuthButtons />
           </header>
 
           {children}
