@@ -144,3 +144,17 @@
     transform: translateY(0px);
   }
 }
+
+@keyframes flow {
+  from {
+    transform: translateX(-150%);
+  }
+
+  to {
+    transform: translateX(250%);
+  }
+}
+
+.flow-light {
+  animation: flow 2s linear infinite;
+}
