@@ -64,6 +64,7 @@ export default function Home() {
   const [credits, setCredits] = useState<number | null>(null);
   const [isPro, setIsPro] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
+  const [displayStep, setDisplayStep] = useState(0);
   const { isSignedIn } = useUser();
 
   const [business, setBusiness] = useState("");
@@ -113,12 +114,22 @@ export default function Home() {
     return () => cancelAnimationFrame(animationFrame);
   }, []);
 
+  useEffect(() => {
+    const duration = displayStep === 0 ? 2200 : displayStep === 4 ? 2800 : 1500;
+
+    const timeout = setTimeout(() => {
+      setDisplayStep((prev) => (prev === 4 ? 0 : prev + 1));
+    }, duration);
+
+    return () => clearTimeout(timeout);
+  }, [displayStep]);
+
   const status = [
     "Analyzing Business...",
     "Researching Target...",
     "Writing Copy...",
     "Generating Hero Image...",
-    "Building HTML...",
+    "Ready",
   ];
 
   const handleGenerate = async () => {
@@ -320,7 +331,7 @@ export default function Home() {
           AIが分析からコピー・画像・HTML生成までを自動化します。
         </p>
 
-        <div className="mx-auto mt-20 grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto mt-20 grid max-w-5xl gap-8 perspective-[1000px] md:grid-cols-2 lg:grid-cols-4">
           <FeatureCard
             delay={0}
             icon={<Zap size={42} strokeWidth={1.8} />}
@@ -353,59 +364,83 @@ export default function Home() {
         <div className="relative mt-20 grid gap-8 md:grid-cols-2 xl:grid-cols-5">
           <div className="relative">
             <WorkflowStep
-              active={activeStep === 0}
+              active={displayStep === 0}
               delay={0}
               number="01"
               icon={<Building2 size={42} strokeWidth={1.8} />}
               title="Business"
               description="業種・ターゲット・雰囲気を入力"
             />
-            <div className="absolute top-[96px] left-full hidden h-[2px] w-16 overflow-hidden rounded-full bg-cyan-500/20 xl:block">
-              <div className="flow-light absolute h-full w-8 bg-gradient-to-r from-transparent via-cyan-200 to-transparent" />
+            <div
+              className={`absolute top-[96px] left-full hidden h-[2px] w-16 overflow-hidden rounded-full xl:block ${
+                displayStep >= 1 ? "bg-cyan-500/30" : "bg-zinc-700/40"
+              }`}
+            >
+              {displayStep === 0 && (
+                <div className="flow-light absolute h-full w-8 bg-gradient-to-r from-transparent via-cyan-200 to-transparent" />
+              )}
             </div>
           </div>
           <div className="relative">
             <WorkflowStep
-              active={activeStep === 1}
+              active={displayStep === 1}
               delay={0.15}
               number="02"
               icon={<BrainCircuit size={42} strokeWidth={1.8} />}
               title="AI Analysis"
               description="ターゲット・競合・USPを分析"
             />
-            <div className="absolute top-[96px] left-full hidden h-[2px] w-16 overflow-hidden rounded-full bg-cyan-500/20 xl:block">
-              <div className="flow-light absolute h-full w-8 bg-gradient-to-r from-transparent via-cyan-200 to-transparent" />
+            <div
+              className={`absolute top-[96px] left-full hidden h-[2px] w-16 overflow-hidden rounded-full xl:block ${
+                displayStep >= 2 ? "bg-cyan-500/30" : "bg-zinc-700/40"
+              }`}
+            >
+              {displayStep === 1 && (
+                <div className="flow-light absolute h-full w-8 bg-gradient-to-r from-transparent via-cyan-200 to-transparent" />
+              )}
             </div>
           </div>
           <div className="relative">
             <WorkflowStep
-              active={activeStep === 2}
+              active={displayStep === 2}
               delay={0.3}
               number="03"
               icon={<PenTool size={42} strokeWidth={1.8} />}
               title="Copy"
               description="AIがコピーを生成"
             />
-            <div className="absolute top-[96px] left-full hidden h-[2px] w-16 overflow-hidden rounded-full bg-cyan-500/20 xl:block">
-              <div className="flow-light absolute h-full w-8 bg-gradient-to-r from-transparent via-cyan-200 to-transparent" />
+            <div
+              className={`absolute top-[96px] left-full hidden h-[2px] w-16 overflow-hidden rounded-full xl:block ${
+                displayStep >= 3 ? "bg-cyan-500/30" : "bg-zinc-700/40"
+              }`}
+            >
+              {displayStep === 2 && (
+                <div className="flow-light absolute h-full w-8 bg-gradient-to-r from-transparent via-cyan-200 to-transparent" />
+              )}
             </div>
           </div>
           <div className="relative">
             <WorkflowStep
-              active={activeStep === 3}
+              active={displayStep === 3}
               delay={0.45}
               number="04"
               icon={<ImageIcon size={42} strokeWidth={1.8} />}
               title="Image"
               description="AIがヒーロー画像を生成"
             />
-            <div className="absolute top-[96px] left-full hidden h-[2px] w-16 overflow-hidden rounded-full bg-cyan-500/20 xl:block">
-              <div className="flow-light absolute h-full w-8 bg-gradient-to-r from-transparent via-cyan-200 to-transparent" />
+            <div
+              className={`absolute top-[96px] left-full hidden h-[2px] w-16 overflow-hidden rounded-full xl:block ${
+                displayStep >= 4 ? "bg-cyan-500/30" : "bg-zinc-700/40"
+              }`}
+            >
+              {displayStep === 3 && (
+                <div className="flow-light absolute h-full w-8 bg-gradient-to-r from-transparent via-cyan-200 to-transparent" />
+              )}
             </div>
           </div>
           <div className="relative">
             <WorkflowStep
-              active={activeStep === 4}
+              active={displayStep === 4}
               delay={0.6}
               number="05"
               icon={<FileCode2 size={42} strokeWidth={1.8} />}
@@ -424,7 +459,7 @@ export default function Home() {
               className="absolute -top-3 -right-3"
             >
               {/* 波紋 */}
-              {activeStep === 4 && (
+              {displayStep === 4 && (
                 <motion.div
                   className="absolute inset-0 rounded-full border border-cyan-300"
                   animate={{
@@ -442,42 +477,43 @@ export default function Home() {
               {/* 本体 */}
               <div
                 className={`relative rounded-full p-2 transition-all duration-500 ${
-                  activeStep === 4
+                  displayStep === 4
                     ? "bg-cyan-400 shadow-[0_0_25px_rgba(34,211,238,.9)]"
                     : "bg-zinc-700"
                 } `}
               >
-                {activeStep === 4 ? (
+                {displayStep === 4 ? (
                   <Check size={18} className="text-white" />
                 ) : (
                   <Loader2 size={18} className="animate-spin text-cyan-300" />
                 )}
               </div>
               <motion.div
-                key={activeStep}
+                key={displayStep}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35 }}
                 className={`absolute top-1/2 left-10 -translate-y-1/2 rounded-full border px-3 py-1 text-xs font-medium whitespace-nowrap backdrop-blur-md transition-all duration-500 ${
-                  activeStep === 4
+                  displayStep === 4
                     ? "border-cyan-400/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(34,211,238,.35)]"
                     : "border-zinc-700 bg-zinc-900/60"
                 } `}
               >
                 <motion.span
-                  key={activeStep}
+                  key={displayStep}
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                   className={`flex items-center gap-2 ${
-                    activeStep === 4
+                    displayStep === 4
                       ? "text-cyan-300"
                       : "animate-pulse text-zinc-400"
                   }`}
                 >
-                  {activeStep === 4 && <Check size={14} />}
-
-                  {status[activeStep]}
+                  <>
+                    {displayStep === 4 && <Check size={14} />}
+                    {displayStep === 4 ? "Ready" : status[displayStep]}
+                  </>
                 </motion.span>
               </motion.div>
             </motion.div>
@@ -525,18 +561,18 @@ export default function Home() {
             <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
             {loading ? (
-              <span
-                className={`relative z-10 flex items-center justify-center gap-2 ${
-                  activeStep === 4 ? "text-cyan-300" : "text-white"
-                }`}
-              >
+              <span className="relative z-10 flex items-center justify-center gap-2">
                 {activeStep === 4 ? (
-                  <Check size={16} />
+                  <>
+                    <Check size={16} className="text-cyan-300" />
+                    <span className="text-cyan-300">Ready</span>
+                  </>
                 ) : (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin text-cyan-300" />
+                    <span className="text-white">{status[activeStep]}</span>
+                  </>
                 )}
-
-                {status[activeStep]}
               </span>
             ) : !isSignedIn ? (
               <span className="relative z-10">ログインしてください</span>

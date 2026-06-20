@@ -1,10 +1,58 @@
 "use client";
 
-import { Float, Stars } from "@react-three/drei";
+import { Float, Stars, Sparkles } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import { useRef } from "react";
 import * as THREE from "three";
+
+function Scene() {
+  const light = useRef<THREE.PointLight>(null!);
+
+  useFrame((state) => {
+    light.current.position.x +=
+      (state.pointer.x * 3 - light.current.position.x) * 0.05;
+
+    light.current.position.y +=
+      (state.pointer.y * 2 - light.current.position.y) * 0.05;
+  });
+
+  return (
+    <>
+      <ambientLight intensity={0.5} />
+
+      <pointLight
+        ref={light}
+        position={[0, 0, 4]}
+        intensity={20}
+        color="#22d3ee"
+      />
+
+      <Stars radius={80} depth={40} count={4000} factor={4} fade speed={1} />
+
+      <Sparkles
+        count={200}
+        scale={[15, 8, 8]}
+        size={2}
+        speed={0.25}
+        opacity={0.8}
+        color="#67e8f9"
+      />
+
+      <group position={[2.8, 1.4, 0]}>
+        <FloatingOrb />
+      </group>
+
+      <EffectComposer>
+        <Bloom
+          intensity={2.5}
+          luminanceThreshold={0.05}
+          luminanceSmoothing={0.6}
+        />
+      </EffectComposer>
+    </>
+  );
+}
 
 function OrbitParticles() {
   const group = useRef<THREE.Group>(null!);
@@ -45,7 +93,6 @@ function OrbitParticles() {
           </mesh>
         );
       })}
-      <OrbitParticles />
     </group>
   );
 }
@@ -54,6 +101,7 @@ function FloatingOrb() {
   const mesh = useRef<THREE.Group>(null!);
   const ring = useRef<THREE.Mesh>(null!);
   const orbit = useRef<THREE.Mesh>(null!);
+  const core = useRef<THREE.Mesh>(null!);
 
   useFrame((state) => {
     mesh.current.scale.setScalar(
@@ -68,6 +116,10 @@ function FloatingOrb() {
 
     orbit.current.position.x = Math.cos(t) * 1.2;
     orbit.current.position.z = Math.sin(t) * 1.2;
+
+    const material = core.current.material as THREE.MeshStandardMaterial;
+
+    material.emissiveIntensity = 8 + Math.sin(state.clock.elapsedTime * 3) * 2;
   });
 
   return (
@@ -86,7 +138,7 @@ function FloatingOrb() {
           />
         </mesh>
 
-        <mesh scale={0.65}>
+        <mesh ref={core} scale={0.65}>
           <sphereGeometry args={[0.55, 64, 64]} />
           <meshStandardMaterial
             color="#67e8f9"
@@ -112,6 +164,7 @@ function FloatingOrb() {
             emissiveIntensity={10}
           />
         </mesh>
+        <OrbitParticles />
       </group>
     </Float>
   );
@@ -121,22 +174,7 @@ export default function HeroBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden">
       <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
-        <ambientLight intensity={0.5} />
-
-        <pointLight position={[0, 0, 4]} intensity={20} color="#22d3ee" />
-
-        <Stars radius={80} depth={40} count={4000} factor={4} fade speed={1} />
-
-        <group position={[2.8, 1.4, 0]}>
-          <FloatingOrb />
-        </group>
-        <EffectComposer>
-          <Bloom
-            intensity={2.3}
-            luminanceThreshold={0.15}
-            luminanceSmoothing={0.8}
-          />
-        </EffectComposer>
+        <Scene />
       </Canvas>
     </div>
   );

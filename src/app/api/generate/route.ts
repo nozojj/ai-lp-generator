@@ -9,6 +9,7 @@ const client = new OpenAI({
 });
 
 export async function POST(req: Request) {
+  const OWNER_ID = process.env.OWNER_CLERK_ID;
   try {
     const { userId } = await auth();
 
@@ -26,10 +27,31 @@ export async function POST(req: Request) {
       user = await prisma.user.create({
         data: {
           clerkId: userId,
+          credits: userId === OWNER_ID ? 9999 : 0,
         },
       });
     }
 
+    if (userId === OWNER_ID && user && user.credits < 9999) {
+      await prisma.user.update({
+        where: {
+          clerkId: userId,
+        },
+        data: {
+          credits: 9999,
+        },
+      });
+
+      user.credits = 9999;
+    }
+
+    if (userId !== OWNER_ID) {
+      return NextResponse.json(
+        { error: "現在決済は停止中です" },
+        { status: 403 },
+      );
+    }
+    console.log("credits:", user.credits);
     console.log("isPro:", user.isPro);
     console.log("credits:", user.credits);
     console.log("clerkId:", user.clerkId);

@@ -12,7 +12,7 @@ model User {
 
   clerkId String @unique
 
-  credits Int @default(5)
+  credits Int @default(0)
 
   isPro Boolean @default(false)
 
