@@ -24,6 +24,7 @@ model Generation {
   atmosphere String
   hero       String
   cta        String
+  ctaUrl     String?
   features   String[]
   faq        Json?
   benefits   String[]

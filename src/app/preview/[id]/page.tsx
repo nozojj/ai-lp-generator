@@ -61,9 +61,15 @@ export default async function PreviewPage({
 
           <p className="mb-8 text-lg text-slate-200 md:text-xl">{item.cta}</p>
 
-          <Button className="rounded-xl bg-blue-600 px-8 py-4 font-bold shadow-lg">
-            今すぐ申し込む
-          </Button>
+          <a
+            href={item.ctaUrl ?? "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button className="rounded-xl bg-blue-600 px-8 py-4 font-bold shadow-lg">
+              {item.cta}
+            </Button>
+          </a>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-8 text-slate-300">
             <div>
@@ -179,10 +185,15 @@ export default async function PreviewPage({
         <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-cyan-500 p-12">
           <h2 className="text-4xl font-bold text-white">{item.hero}</h2>
 
-          <p className="mt-4 text-lg text-cyan-100">{item.cta}</p>
-          <Button className="mt-8 h-14 rounded-2xl bg-white px-10 text-lg font-bold text-blue-600 shadow-xl transition hover:scale-105 hover:bg-slate-100">
-            今すぐ申し込む
-          </Button>
+          <a
+            href={item.ctaUrl ?? "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button className="mt-8 h-14 rounded-2xl bg-white px-10 text-lg font-bold text-blue-600 shadow-xl transition hover:scale-105 hover:bg-slate-100">
+              {item.cta}
+            </Button>
+          </a>
         </div>
       </section>
     </main>
