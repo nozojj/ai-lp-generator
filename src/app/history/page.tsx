@@ -1,4 +1,4 @@
-import DeleteButton from "@/components/delete-button";
+import DeleteButton from "@/components/DeleteButton";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";

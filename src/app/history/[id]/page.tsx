@@ -1,5 +1,5 @@
 import { CopyButton } from "@/components/copy-button";
-import DownloadHtmlButton from "@/components/download-html-button";
+import DownloadHtmlButton from "@/components/DownloadHtmlButton";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
@@ -216,12 +216,20 @@ li {
           </div>
 
           <CopyButton text={copyText} />
-          <DownloadHtmlButton html={htmlContent} />
+          <DownloadHtmlButton id={item.id} />
+
           <Link
             href={`/preview/${item.id}`}
             className="rounded-lg bg-blue-600 px-4 py-2 text-white"
           >
             LPプレビュー
+          </Link>
+
+          <Link
+            href={`/edit/${item.id}`}
+            className="rounded-lg bg-amber-500 px-4 py-2 text-white"
+          >
+            編集
           </Link>
         </div>
 

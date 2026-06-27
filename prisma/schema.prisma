@@ -27,8 +27,10 @@ model Generation {
   ctaUrl     String?
   features   String[]
   faq        Json?
+  testimonials Json?
   benefits   String[]
   imageUrl   String?
+  template String @default("modern")
   createdAt  DateTime @default(now())
   user       User     @relation(fields: [userId], references: [id])
 }

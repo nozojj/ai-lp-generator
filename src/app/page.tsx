@@ -33,6 +33,7 @@ import WorkflowStep from "@/components/WorkflowStep";
 import FeatureCard from "@/components/FeatureCard";
 import HeroCard from "@/components/HeroCard";
 import HeroBackground from "@/components/HeroBackground";
+import { Label } from "@/components/ui/label";
 
 type ResultType = {
   hero: string;
@@ -97,6 +98,7 @@ export default function Home() {
   const [business, setBusiness] = useState("");
   const [target, setTarget] = useState("");
   const [atmosphere, setAtmosphere] = useState("");
+  const [template, setTemplate] = useState("modern");
 
   const [result, setResult] = useState<ResultType | null>(null);
   const [loading, setLoading] = useState(false);
@@ -192,6 +194,7 @@ export default function Home() {
           business,
           target,
           atmosphere,
+          template,
         }),
       });
 
@@ -657,6 +660,23 @@ export default function Home() {
               size={18}
               className="absolute top-1/2 left-4 -translate-y-1/2 text-cyan-400"
             />
+
+            <div className="space-y-2">
+              <Label htmlFor="template">テンプレート</Label>
+
+              <select
+                id="template"
+                aria-label="テンプレート"
+                value={template}
+                onChange={(e) => setTemplate(e.target.value)}
+                className="h-14 w-full rounded-2xl border border-cyan-500/20 bg-zinc-900/40 px-4 text-white"
+              >
+                <option value="modern">Modern</option>
+                <option value="luxury">Luxury</option>
+                <option value="minimal">Minimal</option>
+                <option value="corporate">Corporate</option>
+              </select>
+            </div>
 
             <Input
               placeholder="雰囲気（例：高級感）"
