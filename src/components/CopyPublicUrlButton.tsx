@@ -11,7 +11,12 @@ export default function CopyPublicUrlButton({ id }: { id: string }) {
   }
 
   return (
-    <Button type="button" variant="outline" onClick={handleCopy}>
+    <Button
+      className="h-11 w-full"
+      type="button"
+      variant="outline"
+      onClick={handleCopy}
+    >
       URLコピー
     </Button>
   );

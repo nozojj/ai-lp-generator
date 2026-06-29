@@ -199,38 +199,83 @@ faqにはユーザーが気になりそうな質問と回答を3個作成して�
 
     const imageUrl = `data:image/png;base64,${imageBase64}`;
 
-    const generation = await prisma.generation.create({
-      data: {
-        userId: user.id,
-
-        business: body.business,
-        target: body.target,
-        atmosphere: body.atmosphere,
-
-        template: body.template,
-
-        hero: parsed.hero,
-        cta: parsed.cta,
-        ctaUrl: "https://example.com",
-
-        features: parsed.features,
-        benefits: parsed.benefits,
-        faq: parsed.faq,
-        imageUrl,
-        testimonials: parsed.testimonials,
-      },
-    });
+    let generation;
 
     if (!user.isPro) {
-      await prisma.user.update({
-        where: {
-          clerkId: userId,
-        },
+      const result = await prisma.$transaction(async (tx) => {
+        const generation = await tx.generation.create({
+          data: {
+            userId: user.id,
 
-        data: {
-          credits: {
-            decrement: 1,
+            business: body.business,
+            target: body.target,
+            atmosphere: body.atmosphere,
+
+            template: body.template,
+
+            hero: parsed.hero,
+            cta: parsed.cta,
+            ctaUrl: "https://example.com",
+
+            features: parsed.features,
+            benefits: parsed.benefits,
+            faq: parsed.faq,
+            imageUrl,
+            testimonials: parsed.testimonials,
           },
+        });
+
+        await tx.user.update({
+          where: {
+            clerkId: userId,
+          },
+          data: {
+            credits: {
+              decrement: 1,
+            },
+          },
+        });
+
+        await tx.creditHistory.create({
+          data: {
+            userId: user.id,
+            amount: -1,
+            reason: "LP生成",
+          },
+        });
+
+        return generation;
+      });
+
+      generation = result;
+    } else {
+      generation = await prisma.generation.create({
+        data: {
+          userId: user.id,
+
+          business: body.business,
+          target: body.target,
+          atmosphere: body.atmosphere,
+
+          template: body.template,
+
+          hero: parsed.hero,
+          cta: parsed.cta,
+          ctaUrl: "https://example.com",
+
+          features: parsed.features,
+          benefits: parsed.benefits,
+          faq: parsed.faq,
+          imageUrl,
+          testimonials: parsed.testimonials,
+        },
+      });
+
+      await prisma.creditHistory.create({
+        data: {
+          userId: user.id,
+          amount: 0,
+          reason: "ProプランでLP生成",
         },
       });
     }

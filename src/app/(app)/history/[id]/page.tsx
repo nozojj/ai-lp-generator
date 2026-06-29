@@ -204,9 +204,9 @@ li {
         ← 履歴一覧へ戻る
       </Link>
       <div className="mx-auto max-w-3xl space-y-6">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-bold">{item.hero}</h1>
+        <div className="flex items-start justify-between gap-10">
+          <div className="max-w-2xl flex-1">
+            <h1 className="text-4xl font-bold break-words">{item.hero}</h1>
 
             <p className="text-zinc-500">
               {new Date(item.createdAt).toLocaleString("ja-JP")}
@@ -215,22 +215,23 @@ li {
             <p className="mb-2 text-zinc-400">{item.business}</p>
           </div>
 
-          <CopyButton text={copyText} />
-          <DownloadHtmlButton id={item.id} />
+          <div className="flex w-48 flex-col gap-3">
+            <CopyButton text={copyText} />
 
-          <Link
-            href={`/preview/${item.id}`}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-white"
-          >
-            LPプレビュー
-          </Link>
+            <DownloadHtmlButton id={item.id} />
 
-          <Link
-            href={`/edit/${item.id}`}
-            className="rounded-lg bg-amber-500 px-4 py-2 text-white"
-          >
-            編集
-          </Link>
+            <Link href={`/preview/${item.id}`}>
+              <div className="rounded-lg bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700">
+                LPプレビュー
+              </div>
+            </Link>
+
+            <Link href={`/edit/${item.id}`}>
+              <div className="rounded-lg bg-amber-500 px-4 py-2 text-center text-white hover:bg-amber-600">
+                編集
+              </div>
+            </Link>
+          </div>
         </div>
 
         <div className="rounded-xl bg-zinc-900 p-6">
