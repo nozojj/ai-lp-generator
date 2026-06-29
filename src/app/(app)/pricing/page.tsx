@@ -2,6 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Pricing | AI LP Generator",
+  description: "AI LP Generatorの料金プランです。",
+};
 
 export default function PricingPage() {
   const [isPro, setIsPro] = useState(false);

@@ -16,8 +16,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI LP Generator",
-  description: "OpenAIを活用したAI LPジェネレーター",
+  metadataBase: new URL("https://ai-lp-generator.vercel.app"),
+  title: {
+    default: "AI LP Generator",
+    template: "%s",
+  },
+  description:
+    "AIが高品質なランディングページを自動生成するAI SaaS。",
 };
 
 export default function RootLayout({

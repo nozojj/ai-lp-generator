@@ -1,6 +1,12 @@
 import HistoryList from "@/components/HistoryList";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "History | AI LP Generator",
+  description: "生成履歴を確認できます。",
+};
 
 export default async function HistoryPage() {
   const { userId } = await auth();
