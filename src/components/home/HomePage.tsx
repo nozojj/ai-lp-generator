@@ -1,20 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import HeroBackground from "@/components/HeroBackground";
 import LoadingDialog from "./LoadingDialog";
 import HeroSection from "./HeroSection";
 import GeneratorForm from "./GeneratorForm";
 import PreviewSection from "./PreviewSection";
-import type { Result } from "@/types/result";
 import HowItWorksSection from "./HowItWorksSection";
 import { previewResult } from "@/constants/preview-result";
 import { status } from "@/constants/status";
 import { useCredits } from "@/hooks/useCredits";
 import { useGenerateLP } from "@/hooks/useGenerateLP";
+import { useParallax } from "@/hooks/useParallax";
+import { useWorkflow } from "@/hooks/useWorkflow";
 import {
   benefitIcons,
   featureIcons,
@@ -22,25 +21,18 @@ import {
 } from "@/constants/features";
 
 export default function Home() {
-  const router = useRouter();
-
-  const [mouseLight, setMouseLight] = useState({
-    x: 0,
-    y: 0,
-  });
-
-  const [targetParallax, setTargetParallax] = useState({
-    x: 0,
-    y: 0,
-  });
-
-  const [mouseParallax, setMouseParallax] = useState({
-    x: 0,
-    y: 0,
-  });
-
-  const [displayStep, setDisplayStep] = useState(0);
   const { isSignedIn } = useUser();
+
+  const { credits } = useCredits();
+
+  const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+
+  const { loading, activeStep, result, generate } = useGenerateLP(DEMO_MODE);
+
+  const displayStep = useWorkflow();
+
+  const { mouseLight, setMouseLight, mouseParallax, setTargetParallax } =
+    useParallax();
 
   const [business, setBusiness] = useState("");
   const [target, setTarget] = useState("");
@@ -51,108 +43,10 @@ export default function Home() {
     x: 0,
     y: 0,
   });
-  const { credits } = useCredits();
-  //結果の代用
+
   const displayResult = result ?? previewResult;
-  //デモ
-  const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 
-  const {
-  loading,
-  activeStep,
-  result,
-  generate,
-  setActiveStep,
-} = useGenerateLP(DEMO_MODE);
-
-  useEffect(() => {
-    if (!loading) return;
-
-    const interval = setInterval(() => {
-      setActiveStep((prev) => (prev >= 4 ? prev : prev + 1));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [loading, setActiveStep]);
-
-  useEffect(() => {
-    let animationFrame: number;
-
-    const animate = () => {
-      setMouseParallax((prev) => ({
-        x: prev.x + (targetParallax.x - prev.x) * 0.08,
-        y: prev.y + (targetParallax.y - prev.y) * 0.08,
-      }));
-
-      animationFrame = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => cancelAnimationFrame(animationFrame);
-  }, []);
-
-  useEffect(() => {
-    const duration = displayStep === 0 ? 2200 : displayStep === 4 ? 2800 : 1500;
-
-    const timeout = setTimeout(() => {
-      setDisplayStep((prev) => (prev === 4 ? 0 : prev + 1));
-    }, duration);
-
-    return () => clearTimeout(timeout);
-  }, [displayStep]);
-
-  const handleGenerate = async () => {
-    if (DEMO_MODE) {
-      setLoading(true);
-      setActiveStep(0);
-
-      await new Promise((resolve) => setTimeout(resolve, 6000));
-
-      setResult(previewResult);
-      setLoading(false);
-
-      return;
-    }
-    setActiveStep(0);
-    setLoading(true);
-
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          business,
-          target,
-          atmosphere,
-          template,
-        }),
-      });
-
-      if (!response.ok) {
-        toast.error("生成失敗");
-        throw new Error("API Error");
-      }
-
-      const data = await response.json();
-
-      toast.success("生成成功");
-
-      router.push(`/history/${data.id}`);
-    } catch (error) {
-      console.log(error);
-
-      toast.error("エラーが発生しました");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const heroWords = displayResult?.hero.split("") ?? [];
-
-  
+  const heroWords = displayResult.hero.split("");
 
   return (
     <main
@@ -209,7 +103,7 @@ export default function Home() {
         setTemplate={setTemplate}
         activeStep={activeStep}
         status={status}
-        handleGenerate={handleGenerate}
+        handleGenerate={() => generate(business, target, atmosphere, template)}
       />
 
       <PreviewSection

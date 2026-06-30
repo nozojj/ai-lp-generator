@@ -51,16 +51,24 @@ export async function POST(req: Request) {
         { status: 403 },
       );
     }
-    console.log("credits:", user.credits);
-    console.log("isPro:", user.isPro);
-    console.log("credits:", user.credits);
-    console.log("clerkId:", user.clerkId);
+    console.log({
+      credits: user.credits,
+      isPro: user.isPro,
+      clerkId: user.clerkId,
+    });
 
     if (!user.isPro && user.credits <= 0) {
-      return NextResponse.json({ error: "クレジット不足" }, { status: 400 });
+      return NextResponse.json({ error: "クレジット不足" }, { status: 402 });
     }
 
     const body = await req.json();
+
+    if (!body.business || !body.target || !body.atmosphere || !body.template) {
+      return NextResponse.json(
+        { error: "入力内容が不足しています" },
+        { status: 400 },
+      );
+    }
 
     const prompt = `
 業種: ${body.business}

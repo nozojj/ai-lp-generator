@@ -3,8 +3,8 @@ import { auth } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 import StatsCard from "@/components/dashboard/StatsCard";
 import EmptyState from "@/components/common/EmptyState";
-import GenerationCard from "@/components/dashboard/GenerationCard";
 import PageHeader from "@/components/common/PageHeader";
+import DashboardContent from "@/components/dashboard/DashboardContent";
 
 export const metadata: Metadata = {
   title: "Dashboard | AI LP Generator",
@@ -60,9 +60,7 @@ export default async function DashboardPage() {
         />
       ) : (
         <div className="space-y-6">
-          {generations.map((item) => (
-            <GenerationCard key={item.id} item={item} />
-          ))}
+          <DashboardContent generations={generations} />
         </div>
       )}
     </main>
