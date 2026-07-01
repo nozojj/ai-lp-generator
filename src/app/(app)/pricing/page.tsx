@@ -20,12 +20,12 @@ export default function PricingPage() {
     fetchUser();
   }, []);
   return (
-    <main className="min-h-screen bg-black p-8 text-white">
+    <main className="min-h-screen bg-background p-8 text-foreground">
       <div className="mx-auto max-w-5xl">
         <div className="mb-16 text-center">
           <h1 className="mb-4 text-5xl font-bold">Pricing</h1>
 
-          <p className="text-lg text-zinc-400">あなたに合ったプランを選択</p>
+          <p className="text-lg text-muted-foreground">あなたに合ったプランを選択</p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-2">
@@ -33,11 +33,11 @@ export default function PricingPage() {
           <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8">
             <h2 className="mb-4 text-3xl font-bold">Free</h2>
 
-            <p className="mb-8 text-zinc-400">お試し向けプラン</p>
+            <p className="mb-8 text-muted-foreground">お試し向けプラン</p>
             <div className="mb-8">
               <span className="text-5xl font-bold">¥0</span>
 
-              <span className="text-zinc-400">/月</span>
+              <span className="text-muted-foreground">/月</span>
             </div>
 
             <ul className="mb-10 space-y-4">
@@ -46,25 +46,25 @@ export default function PricingPage() {
               <li>✓ 履歴保存</li>
             </ul>
 
-            <Button className="w-full cursor-default bg-zinc-700 text-white hover:bg-zinc-700">
+            <Button className="w-full cursor-default bg-zinc-700 text-foreground hover:bg-zinc-700">
               現在のプラン
             </Button>
           </div>
 
           {/* PRO PLAN */}
           <div className="relative overflow-hidden rounded-2xl bg-[#6c47ff] p-8">
-            <div className="absolute top-0 right-0 bg-white px-4 py-1 text-sm font-bold text-black">
+            <div className="absolute top-0 right-0 bg-card px-4 py-1 text-sm font-bold text-foreground">
               POPULAR
             </div>
 
             <h2 className="mb-4 text-3xl font-bold">Pro</h2>
 
-            <p className="mb-8 text-white/80">本格利用向け</p>
+            <p className="mb-8 text-foreground/80">本格利用向け</p>
 
             <div className="mb-8">
               <span className="text-5xl font-bold">¥980</span>
 
-              <span className="text-white/80">/月</span>
+              <span className="text-foreground/80">/月</span>
             </div>
 
             <ul className="mb-10 space-y-4">
@@ -74,7 +74,7 @@ export default function PricingPage() {
             </ul>
 
             {isPro ? (
-              <Button disabled className="w-full bg-green-500 text-white">
+              <Button disabled className="w-full bg-green-500 text-foreground">
                 現在Proプラン利用中
               </Button>
             ) : (
@@ -88,7 +88,7 @@ export default function PricingPage() {
 
                   window.location.href = data.url;
                 }}
-                className="w-full bg-white text-black hover:bg-zinc-200"
+                className="w-full bg-card text-foreground hover:bg-zinc-200"
               >
                 Proにアップグレード
               </Button>

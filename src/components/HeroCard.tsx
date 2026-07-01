@@ -71,7 +71,7 @@ export default function HeroCard({ mouseParallax }: Props) {
                 AI Powered
               </p>
 
-              <h3 className="text-4xl font-bold text-white">
+              <h3 className="text-4xl font-bold text-foreground">
                 Landing Page Builder
               </h3>
 

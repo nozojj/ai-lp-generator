@@ -1,5 +1,7 @@
+import PageHeader from "@/components/common/PageHeader";
 import { CopyButton } from "@/components/copy-button";
 import DownloadHtmlButton from "@/components/DownloadHtmlButton";
+import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
@@ -13,7 +15,7 @@ export default async function HistoryDetailPage({
   const { userId } = await auth();
 
   if (!userId) {
-    return <main className="p-8 text-white">ログインしてください</main>;
+    return <main className="text-foreground p-8">ログインしてください</main>;
   }
 
   const { id } = await params;
@@ -67,152 +69,26 @@ ${
 }
 `;
 
-  const htmlContent = `
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>${item.hero}</title>
-
-<style>
-body {
-  font-family: sans-serif;
-  max-width: 1000px;
-  margin: auto;
-  padding: 40px;
-  background: #0f172a;
-  color: white;
-}
-
-.hero {
-  text-align: center;
-  padding: 100px 20px;
-}
-
-.hero p {
-  color: #cbd5e1;
-  font-size: 20px;
-  margin-top: 20px;
-}
-
-section {
-  background: #1e293b;
-  padding: 24px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 30px rgba(0,0,0,.2);
-}
-  
-h1 {
-  font-size: 42px;
-}
-
-h2 {
-  margin-bottom: 16px;
-}
-
-li {
-  margin-bottom: 8px;
-}
-
-.faq-item {
-  background: #334155;
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-}
-
-.cta-button {
-  display: inline-block;
-  margin-top: 24px;
-  padding: 14px 28px;
-  background: #3b82f6;
-  color: white;
-  text-decoration: none;
-  border-radius: 10px;
-  font-weight: bold;
-}
-</style>
-
-</head>
-<body>
-
-<div class="hero">
-  <h1>${item.hero}</h1>
-  <p>${item.cta}</p>
-  <a class="cta-button" href="#">
-  今すぐ申し込む
-</a>
-</div>
-
-<section>
-  <h2>Features</h2>
-  <ul>
-    ${
-      Array.isArray(item.features)
-        ? item.features.map((f) => `<li>${f}</li>`).join("")
-        : ""
-    }
-  </ul>
-</section>
-
-<section>
-  <h2>Benefits</h2>
-  <ul>
-    ${
-      Array.isArray(item.benefits)
-        ? item.benefits.map((b) => `<li>${b}</li>`).join("")
-        : ""
-    }
-  </ul>
-</section>
-
-<section>
-  <h2>FAQ</h2>
-
-  ${
-    Array.isArray(item.faq)
-      ? (
-          item.faq as {
-            question: string;
-            answer: string;
-          }[]
-        )
-          .map(
-            (faq) => `
-<div class="faq-item">
-  <h3>${faq.question}</h3>
-  <p>${faq.answer}</p>
-</div>
-`,
-          )
-          .join("")
-      : ""
-  }
-</section>
-
-</body>
-</html>
-`;
-
   return (
-    <main className="min-h-screen bg-black p-8 text-white">
+    <main className="bg-background text-foreground min-h-screen p-8">
       <Link
         href="/history"
-        className="text-zinc-400 transition hover:text-white"
+        className="text-muted-foreground hover:text-foreground mb-8 inline-block transition"
       >
         ← 履歴一覧へ戻る
       </Link>
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-start justify-between gap-10">
           <div className="max-w-2xl flex-1">
-            <h1 className="text-4xl font-bold break-words">{item.hero}</h1>
+            <PageHeader
+              label="History"
+              title={item.hero}
+              description={new Date(item.createdAt).toLocaleString("ja-JP")}
+            />
 
-            <p className="text-zinc-500">
-              {new Date(item.createdAt).toLocaleString("ja-JP")}
+            <p className="bg-muted text-muted-foreground inline-flex rounded-full px-3 py-1 text-sm">
+              {item.business}
             </p>
-
-            <p className="mb-2 text-zinc-400">{item.business}</p>
           </div>
 
           <div className="flex w-48 flex-col gap-3">
@@ -220,51 +96,53 @@ li {
 
             <DownloadHtmlButton id={item.id} />
 
-            <Link href={`/preview/${item.id}`}>
-              <div className="rounded-lg bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700">
-                LPプレビュー
-              </div>
-            </Link>
+            <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+              <Link href={`/preview/${item.id}`}>LPプレビュー</Link>
+            </Button>
 
-            <Link href={`/edit/${item.id}`}>
-              <div className="rounded-lg bg-amber-500 px-4 py-2 text-center text-white hover:bg-amber-600">
-                編集
-              </div>
-            </Link>
+            <Button asChild className="w-full bg-amber-500 hover:bg-amber-600">
+              <Link href={`/edit/${item.id}`}>編集</Link>
+            </Button>
           </div>
         </div>
 
-        <div className="rounded-xl bg-zinc-900 p-6">
+        <div className="bg-card border-border rounded-xl border p-6">
           <h2 className="mb-4 text-2xl font-bold">CTA</h2>
 
           <p className="text-lg leading-8">{item.cta}</p>
         </div>
 
-        <div className="rounded-xl bg-zinc-900 p-6">
+        <div className="bg-card border-border rounded-xl border p-6">
           <h2 className="mb-4 text-2xl font-bold">Features</h2>
 
           <div className="space-y-3">
             {Array.isArray(item.features) &&
               item.features.map((feature, index) => (
-                <div key={index} className="rounded-lg bg-zinc-800 p-4">
+                <div
+                  key={index}
+                  className="bg-muted text-muted-foreground rounded-lg p-4"
+                >
                   {String(feature)}
                 </div>
               ))}
           </div>
         </div>
-        <div className="rounded-xl bg-zinc-900 p-6">
+        <div className="bg-card border-border rounded-xl border p-6">
           <h2 className="mb-4 text-xl font-bold">Benefits</h2>
 
           <div className="space-y-3">
             {Array.isArray(item.benefits) &&
               item.benefits.map((benefit, index) => (
-                <div key={index} className="rounded-lg bg-zinc-800 p-4">
+                <div
+                  key={index}
+                  className="bg-muted text-muted-foreground rounded-lg p-4"
+                >
                   {String(benefit)}
                 </div>
               ))}
           </div>
         </div>
-        <div className="rounded-xl bg-zinc-900 p-6">
+        <div className="bg-card border-border rounded-xl border p-6">
           <h2 className="mb-4 text-xl font-bold">FAQ</h2>
 
           <div className="space-y-3">
@@ -275,10 +153,13 @@ li {
                   answer: string;
                 }[]
               ).map((faq, index) => (
-                <div key={index} className="rounded-lg bg-zinc-800 p-4">
+                <div
+                  key={index}
+                  className="bg-muted text-muted-foreground rounded-lg p-4"
+                >
                   <p className="font-bold">Q. {faq.question}</p>
 
-                  <p className="mt-2 text-zinc-300">A. {faq.answer}</p>
+                  <p className="text-muted-foreground mt-2">A. {faq.answer}</p>
                 </div>
               ))}
           </div>

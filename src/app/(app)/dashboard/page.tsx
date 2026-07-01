@@ -37,7 +37,7 @@ export default async function DashboardPage() {
   const total = generations.length;
 
   return (
-    <main className="min-h-screen bg-background p-10 text-foreground">
+    <main className="bg-background text-foreground min-h-screen p-10">
       <PageHeader
         label="Dashboard"
         title="マイLP"
@@ -51,7 +51,9 @@ export default async function DashboardPage() {
         <StatsCard title="利用プラン" value={user.isPro ? "Pro" : "Free"} />
       </div>
 
-      <h2 className="mb-4 text-2xl font-semibold">生成したLP一覧</h2>
+      <h2 className="text-foreground mb-4 text-2xl font-semibold">
+        生成したLP一覧
+      </h2>
 
       {generations.length === 0 ? (
         <EmptyState

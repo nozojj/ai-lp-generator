@@ -39,7 +39,7 @@ export default async function CreditsPage() {
   });
 
   return (
-    <main className="min-h-screen bg-slate-950 p-10 text-white">
+    <main className="min-h-screen bg-background p-10 text-foreground">
       <div className="mx-auto max-w-6xl">
         <PageHeader
           label="Credits"

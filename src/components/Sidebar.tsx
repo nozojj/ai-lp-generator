@@ -4,7 +4,7 @@ import ThemeToggle from "./theme-toggle";
 
 export default function Sidebar() {
   return (
-    <aside className="text-foreground bg-card flex w-64 shrink-0 flex-col border-r border-slate-800 p-6">
+    <aside className="bg-card border-border flex w-64 shrink-0 flex-col border-r p-6">
       <h1 className="mb-10 text-2xl font-bold">
         AI LP
         <span className="text-emerald-400"> Generator</span>
@@ -13,7 +13,7 @@ export default function Sidebar() {
       <nav className="space-y-2">
         <Link
           href="/dashboard"
-          className="flex items-center gap-3 rounded-lg p-3 hover:bg-slate-800"
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-lg p-3 transition-colors"
         >
           <LayoutDashboard size={20} />
           Dashboard
@@ -21,7 +21,7 @@ export default function Sidebar() {
 
         <Link
           href="/dashboard"
-          className="flex items-center gap-3 rounded-lg p-3 hover:bg-slate-800"
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-lg p-3 transition-colors"
         >
           <FileText size={20} />
           My LP
@@ -29,7 +29,7 @@ export default function Sidebar() {
 
         <Link
           href="/credits"
-          className="flex items-center gap-3 rounded-lg p-3 hover:bg-slate-800"
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-lg p-3 transition-colors"
         >
           <Coins size={20} />
           Credits
@@ -37,7 +37,7 @@ export default function Sidebar() {
 
         <Link
           href="/settings"
-          className="flex items-center gap-3 rounded-lg p-3 hover:bg-slate-800"
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-lg p-3 transition-colors"
         >
           <Settings size={20} />
           Settings

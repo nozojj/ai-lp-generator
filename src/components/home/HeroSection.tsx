@@ -47,7 +47,7 @@ export default function HeroSection({
           </div>
 
           <h1
-            className="mb-4 bg-gradient-to-r from-white to-blue-400 bg-clip-text text-6xl font-bold text-transparent"
+            className="mb-4 bg-gradient-to-r from-cyan-200 to-blue-500 bg-clip-text text-6xl font-bold text-transparent"
             style={{
               transform: `translate(${mouseParallax.x * 2}px, ${mouseParallax.y * 2}px)`,
             }}
@@ -64,7 +64,7 @@ export default function HeroSection({
               <p className="text-3xl font-bold text-cyan-300 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)]">
                 100+ Generated LPs
               </p>
-              <p className="text-sm text-zinc-500">生成LP</p>
+              <p className="text-muted-foreground text-sm">生成LP</p>
             </div>
 
             <div
@@ -75,7 +75,7 @@ export default function HeroSection({
               <p className="text-3xl font-bold text-cyan-300 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)]">
                 AI Powered
               </p>
-              <p className="text-sm text-zinc-500">Powered</p>
+              <p className="text-muted-foreground text-sm">Powered</p>
             </div>
 
             <div
@@ -86,13 +86,13 @@ export default function HeroSection({
               <p className="text-3xl font-bold text-cyan-300 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)]">
                 24/7 Available
               </p>
-              <p className="text-sm text-zinc-500">Available</p>
+              <p className="text-muted-foreground text-sm">Available</p>
             </div>
           </div>
           <HeroCard mouseParallax={mouseParallax} />
         </div>
 
-        <p className="mx-auto mt-4 max-w-2xl text-zinc-400">
+        <p className="text-muted-foreground mx-auto mt-4 max-w-2xl">
           業種・ターゲット・雰囲気を入力するだけで、
           LP構成とヒーロー画像を数秒で生成します。
         </p>

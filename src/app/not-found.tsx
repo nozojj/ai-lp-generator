@@ -4,14 +4,14 @@ import { ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-slate-950 px-6 text-white">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-foreground">
       <h1 className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-8xl font-black text-transparent">
         404
       </h1>
 
       <p className="mb-4 text-5xl font-bold">ページが見つかりません</p>
 
-      <p className="mb-8 max-w-md text-center leading-7 text-slate-400">
+      <p className="mb-8 max-w-md text-center leading-7 text-muted-foreground">
         お探しのページは存在しないか、 URLが間違っている可能性があります。
       </p>
 

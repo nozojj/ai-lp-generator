@@ -236,7 +236,7 @@ export default function EditForm({
         <Input
           value={hero}
           onChange={(e) => setHero(e.target.value)}
-          className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+          className="w-full rounded-lg border border-slate-700 bg-muted p-3"
         />
       </div>
 
@@ -246,7 +246,7 @@ export default function EditForm({
           value={cta}
           onChange={(e) => setCta(e.target.value)}
           rows={4}
-          className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+          className="w-full rounded-lg border border-slate-700 bg-muted p-3"
         />
       </div>
 

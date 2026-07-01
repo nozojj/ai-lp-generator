@@ -13,7 +13,7 @@ export default function AuthButtons() {
     <UserButton />
   ) : (
     <SignInButton mode="modal">
-      <button className="rounded-lg bg-white px-4 py-2 text-black">
+      <button className="rounded-lg bg-card px-4 py-2 text-black">
         Sign in
       </button>
     </SignInButton>

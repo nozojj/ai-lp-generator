@@ -10,12 +10,12 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-slate-950 px-6 text-white">
+    <main className="text-foreground flex min-h-screen flex-col items-center justify-center bg-slate-950 px-6">
       <h1 className="text-7xl font-black text-red-500">Oops...</h1>
 
       <h2 className="mt-6 text-3xl font-bold">エラーが発生しました</h2>
 
-      <p className="mt-3 max-w-md text-center text-slate-400">
+      <p className="text-muted-foreground mt-3 max-w-md text-center">
         もう一度お試しください。
       </p>
 

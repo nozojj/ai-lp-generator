@@ -7,6 +7,13 @@ import DeleteButton from "@/components/DeleteButton";
 import Image from "next/image";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 type Generation = {
   id: string;
@@ -59,38 +66,38 @@ export default function HistoryList({ data }: { data: Generation[] }) {
         />
 
         <div>
-          <Label htmlFor="sort" className="sr-only">
-            並び替え
-          </Label>
+          <Label className="sr-only">並び替え</Label>
 
-          <select
-            id="sort"
-            aria-label="並び替え"
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            className="mb-6 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-white"
-          >
-            <option value="newest">新しい順</option>
-            <option value="oldest">古い順</option>
-            <option value="business">業種順</option>
-          </select>
+          <Select value={sort} onValueChange={setSort}>
+            <SelectTrigger className="h-10 w-40">
+              <SelectValue />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="newest">新しい順</SelectItem>
+              <SelectItem value="oldest">古い順</SelectItem>
+              <SelectItem value="business">業種順</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       {filteredData.length === 0 ? (
-        <div className="rounded-xl bg-zinc-900 p-10 text-center">
+        <div className="bg-card border-border rounded-xl border p-10 text-center">
           <h2 className="text-2xl font-bold">該当する履歴がありません</h2>
 
-          <p className="mt-2 text-zinc-400">検索条件を変更してください。</p>
+          <p className="text-muted-foreground mt-2">
+            検索条件を変更してください。
+          </p>
         </div>
       ) : (
         <div className="space-y-6">
           {sortedData.map((item) => (
             <div key={item.id}>
-              <Link href={`/history/${item.id}`}>
-                <div className="cursor-pointer overflow-hidden rounded-xl bg-zinc-900 transition duration-200 hover:scale-[1.01] hover:bg-zinc-800">
-                  {item.imageUrl && (
-                    <div className="relative">
+              <div className="bg-card border-border overflow-hidden rounded-xl border transition-all duration-200 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-[0_20px_60px_rgba(16,185,129,0.18)]">
+                {item.imageUrl && (
+                  <div className="relative">
+                    <Link href={`/history/${item.id}`}>
                       <Image
                         src={item.imageUrl}
                         alt={item.business}
@@ -98,51 +105,55 @@ export default function HistoryList({ data }: { data: Generation[] }) {
                         height={224}
                         className="h-56 w-full object-cover object-center"
                       />
-                      <div className="absolute top-3 right-3 rounded bg-black/70 px-2 py-1 text-xs text-white">
-                        {new Date(item.createdAt).toLocaleDateString("ja-JP")}
-                      </div>
+                    </Link>
+                    <div className="text-foreground absolute top-3 right-3 rounded bg-black/70 px-2 py-1 text-xs">
+                      {new Date(item.createdAt).toLocaleDateString("ja-JP")}
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  <div className="p-6">
-                    <p className="mb-2 text-zinc-400">{item.business}</p>
+                <div className="p-6">
+                  <p className="bg-muted text-muted-foreground inline-flex rounded-full px-3 py-1 text-sm">
+                    {item.business}
+                  </p>
 
-                    <h2 className="mb-4 line-clamp-2 text-xl font-bold">
+                  <Link href={`/history/${item.id}`} className="mb-4 block">
+                    <h2 className="line-clamp-2 text-xl font-bold transition-colors hover:text-emerald-400">
                       {item.hero}
                     </h2>
+                  </Link>
 
-                    <p className="mb-4 text-sm text-zinc-400">{item.cta}</p>
+                  <p className="text-muted-foreground mb-4 text-sm">
+                    {item.cta}
+                  </p>
 
-                    <div className="space-y-2">
-                      {Array.isArray(item.features) &&
-                        item.features.slice(0, 2).map((feature, index) => (
-                          <div
-                            key={index}
-                            className="rounded-lg bg-zinc-800 p-3"
-                          >
-                            {String(feature)}
-                          </div>
-                        ))}
-                    </div>
-
+                  <div className="space-y-2">
                     {Array.isArray(item.features) &&
-                      item.features.length > 2 && (
-                        <p className="text-sm text-zinc-500">
-                          +{item.features.length - 2}件
-                        </p>
-                      )}
+                      item.features.slice(0, 2).map((feature, index) => (
+                        <div
+                          key={index}
+                          className="bg-muted text-muted-foreground rounded-lg p-3"
+                        >
+                          {String(feature)}
+                        </div>
+                      ))}
+                  </div>
+
+                  {Array.isArray(item.features) && item.features.length > 2 && (
+                    <p className="text-muted-foreground text-sm">
+                      +{item.features.length - 2}件
+                    </p>
+                  )}
+                  <div className="mt-4 grid grid-cols-2 gap-3">
+                    <Link href={`/preview/${item.id}`} target="_blank">
+                      <Button className="h-10 w-full bg-blue-600 hover:bg-blue-700">
+                        LPプレビュー
+                      </Button>
+                    </Link>
+
+                    <DeleteButton id={item.id} />
                   </div>
                 </div>
-              </Link>
-
-              <div className="mt-3 flex gap-3">
-                <Link href={`/preview/${item.id}`} target="_blank">
-                  <Button className="bg-blue-600 hover:bg-blue-700">
-                    LPプレビュー
-                  </Button>
-                </Link>
-
-                <DeleteButton id={item.id} />
               </div>
             </div>
           ))}

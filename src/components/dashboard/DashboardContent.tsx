@@ -54,7 +54,7 @@ export default function DashboardContent({ generations }: Props) {
       <div className="relative mb-6">
         <Search
           size={18}
-          className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400"
+          className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2"
         />
         <Input
           value={search}
@@ -68,7 +68,7 @@ export default function DashboardContent({ generations }: Props) {
             onClick={() => setSearch("")}
             aria-label="検索をクリア"
             title="検索をクリア"
-            className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 transition-colors hover:text-white"
+            className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
           >
             <X size={18} aria-hidden="true" />
           </button>
@@ -76,7 +76,7 @@ export default function DashboardContent({ generations }: Props) {
       </div>
 
       <div className="mb-6 flex items-center justify-between">
-        <p className="mb-4 text-sm text-slate-400">
+        <p className="text-sm text-muted-foreground">
           検索結果：{filtered.length}件
         </p>
 
@@ -99,12 +99,12 @@ export default function DashboardContent({ generations }: Props) {
 
       <div className="space-y-6">
         {filtered.length === 0 ? (
-          <div className="rounded-xl border border-slate-700 bg-slate-900 p-10 text-center">
-            <Search className="mx-auto mb-4 h-12 w-12 text-slate-500" />
+          <div className="border-border bg-card rounded-xl border p-10 text-center">
+            <Search className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
 
             <h3 className="text-lg font-semibold">LPが見つかりません</h3>
 
-            <p className="mt-2 text-slate-400">
+            <p className="text-muted-foreground mt-2">
               検索キーワードを変更してください。
             </p>
           </div>

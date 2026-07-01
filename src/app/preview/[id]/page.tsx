@@ -42,7 +42,7 @@ export default async function PreviewPage({
   const publicUrl = `${process.env.NEXT_PUBLIC_APP_URL}/lp/${item.id}`;
 
   return (
-    <main className="bg-slate-950 text-white">
+    <main className="bg-background text-foreground">
       <section
         className="relative flex min-h-[70vh] items-center justify-center text-center"
         style={{
@@ -52,7 +52,7 @@ export default async function PreviewPage({
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-background/50" />
 
         <div className="relative z-10 max-w-4xl px-6">
           <h1 className="mb-6 text-3xl leading-tight font-bold md:text-5xl">
@@ -73,17 +73,17 @@ export default async function PreviewPage({
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-8 text-slate-300">
             <div>
-              <p className="text-3xl font-bold text-white">10,000+</p>
+              <p className="text-3xl font-bold text-foreground">10,000+</p>
               <p className="text-sm">Users</p>
             </div>
 
             <div>
-              <p className="text-3xl font-bold text-white">98%</p>
+              <p className="text-3xl font-bold text-foreground">98%</p>
               <p className="text-sm">Satisfaction</p>
             </div>
 
             <div>
-              <p className="text-3xl font-bold text-white">24h</p>
+              <p className="text-3xl font-bold text-foreground">24h</p>
               <p className="text-sm">Support</p>
             </div>
           </div>
@@ -94,7 +94,7 @@ export default async function PreviewPage({
         <Link
           href={`/lp/${item.id}`}
           target="_blank"
-          className="rounded-lg bg-green-600 px-4 py-2 text-white"
+          className="rounded-lg bg-green-600 px-4 py-2 text-foreground"
         >
           公開ページ
         </Link>
@@ -112,13 +112,13 @@ export default async function PreviewPage({
             return (
               <div
                 key={index}
-                className="rounded-2xl border border-slate-700 bg-slate-800 p-8 transition duration-300 hover:-translate-y-2 hover:border-blue-500"
+                className="rounded-2xl border border-border bg-muted p-8 transition duration-300 hover:-translate-y-2 hover:border-blue-500"
               >
                 <Icon className="mb-4 text-blue-400" size={36} />
 
                 <h3 className="mb-3 text-xl font-bold">{String(feature)}</h3>
 
-                <p className="text-slate-400">
+                <p className="text-muted-foreground">
                   AIが生成したおすすめポイントです。
                 </p>
               </div>
@@ -138,13 +138,13 @@ export default async function PreviewPage({
               return (
                 <div
                   key={index}
-                  className="rounded-2xl border border-slate-700 bg-slate-800 p-8 transition duration-300 hover:-translate-y-2 hover:border-cyan-500"
+                  className="rounded-2xl border border-border bg-muted p-8 transition duration-300 hover:-translate-y-2 hover:border-cyan-500"
                 >
                   <Icon size={34} className="mb-4 text-cyan-400" />
 
                   <h3 className="mb-3 text-xl font-bold">{String(benefit)}</h3>
 
-                  <p className="text-slate-400">
+                  <p className="text-muted-foreground">
                     AIが分析したおすすめポイントです。
                   </p>
                 </div>
@@ -167,7 +167,7 @@ export default async function PreviewPage({
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="rounded-xl border border-slate-700 bg-slate-800 px-6"
+                className="rounded-xl border border-border bg-muted px-6"
               >
                 <AccordionTrigger className="text-left text-lg font-semibold">
                   {faq.question}
@@ -183,14 +183,14 @@ export default async function PreviewPage({
 
       <section className="mx-auto max-w-5xl p-12 text-center">
         <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-cyan-500 p-12">
-          <h2 className="text-4xl font-bold text-white">{item.hero}</h2>
+          <h2 className="text-4xl font-bold text-foreground">{item.hero}</h2>
 
           <a
             href={item.ctaUrl ?? "#"}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button className="mt-8 h-14 rounded-2xl bg-white px-10 text-lg font-bold text-blue-600 shadow-xl transition hover:scale-105 hover:bg-slate-100">
+            <Button className="mt-8 h-14 rounded-2xl bg-card px-10 text-lg font-bold text-blue-600 shadow-xl transition hover:scale-105 hover:bg-slate-100">
               {item.cta}
             </Button>
           </a>
