@@ -37,7 +37,7 @@ export default async function DashboardPage() {
   const total = generations.length;
 
   return (
-    <main className="min-h-screen bg-slate-950 p-10 text-white">
+    <main className="min-h-screen bg-background p-10 text-foreground">
       <PageHeader
         label="Dashboard"
         title="マイLP"

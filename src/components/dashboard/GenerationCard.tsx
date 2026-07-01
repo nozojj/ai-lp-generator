@@ -18,54 +18,58 @@ export default function GenerationCard({ item }: Props) {
     item.template.charAt(0).toUpperCase() + item.template.slice(1);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-2xl">
+    <div className="group border-border bg-card overflow-hidden rounded-2xl border shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-[0_20px_60px_rgba(16,185,129,0.18)]">
       {item.imageUrl && (
-        <div className="group relative h-56 w-full overflow-hidden">
-          <Link href={`/lp/${item.id}`} className="absolute inset-0">
-            <Image
-              src={item.imageUrl}
-              alt={item.hero}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              unoptimized
-            />
-          </Link>
+        <div className="relative h-56 w-full overflow-hidden">
+          <Link href={`/lp/${item.id}`} className="absolute inset-0 z-10" />
+
+          <Image
+            src={item.imageUrl}
+            alt={item.hero}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            unoptimized
+          />
+
+          <div className="from-background absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t to-transparent" />
         </div>
       )}
       <div className="p-6">
-        <Link href={`/lp/${item.id}`}>
-          <h2 className="text-2xl font-bold transition hover:text-emerald-400">
+        <Link href={`/lp/${item.id}`} className="block">
+          <h2 className="text-2xl leading-tight font-bold transition-colors duration-300 group-hover:text-emerald-400">
             {item.hero}
           </h2>
         </Link>
 
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="text-muted-foreground mt-2 text-sm">
           作成日：
           {new Date(item.createdAt).toLocaleDateString("ja-JP")}
         </p>
         <div className="mt-2 flex items-center gap-2">
-          <span className="text-sm text-slate-400">テンプレート</span>
+          <span className="text-muted-foreground text-sm">テンプレート</span>
 
           <span
-            className={`rounded-full px-3 py-1 text-xs font-bold ${
+            className={`rounded-full border px-3 py-1 text-xs font-bold ${
               item.template === "luxury"
-                ? "bg-yellow-500 text-black"
+                ? "border-amber-500/30 bg-amber-500/20 text-amber-300"
                 : item.template === "minimal"
-                  ? "bg-gray-200 text-black"
+                  ? "border-gray-400/30 bg-gray-500/20 text-gray-300"
                   : item.template === "corporate"
-                    ? "bg-slate-700 text-white"
-                    : "bg-blue-600 text-white"
+                    ? "border-slate-500/30 bg-slate-700/30 text-slate-200"
+                    : "border-blue-500/30 bg-blue-500/20 text-blue-300"
             }`}
           >
             {templateName}
           </span>
         </div>
-        <p className="mt-1 text-sm text-slate-400">
+        <p className="text-muted-foreground mt-1 text-sm">
           業種：
           <span className="font-semibold">{item.business}</span>
         </p>
 
-        <p className="mt-2 line-clamp-2 text-slate-400">{item.cta}</p>
+        <p className="text-muted-foreground mt-2 line-clamp-2 min-h-[3rem]">
+          {item.cta}
+        </p>
 
         <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-3">
           <Link href={`/edit/${item.id}`}>

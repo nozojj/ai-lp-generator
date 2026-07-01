@@ -1,14 +1,10 @@
 import Link from "next/link";
-import {
-  LayoutDashboard,
-  FileText,
-  Coins,
-  Settings,
-} from "lucide-react";
+import { LayoutDashboard, FileText, Coins, Settings } from "lucide-react";
+import ThemeToggle from "./theme-toggle";
 
 export default function Sidebar() {
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-slate-800 bg-slate-900 p-6">
+    <aside className="text-foreground bg-card flex w-64 shrink-0 flex-col border-r border-slate-800 p-6">
       <h1 className="mb-10 text-2xl font-bold">
         AI LP
         <span className="text-emerald-400"> Generator</span>
@@ -47,6 +43,13 @@ export default function Sidebar() {
           Settings
         </Link>
       </nav>
+      <div className="border-border mt-auto border-t pt-6">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground text-sm">テーマ</span>
+
+          <ThemeToggle />
+        </div>
+      </div>
     </aside>
   );
 }
