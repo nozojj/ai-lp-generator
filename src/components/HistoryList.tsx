@@ -98,13 +98,14 @@ export default function HistoryList({ data }: { data: Generation[] }) {
                 {item.imageUrl && (
                   <div className="relative">
                     <Link href={`/history/${item.id}`}>
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.business}
-                        width={800}
-                        height={224}
-                        className="h-56 w-full object-cover object-center"
-                      />
+                      <div className="relative h-56 w-full overflow-hidden">
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.business}
+                          fill
+                          className="object-cover transition-transform duration-300 hover:scale-105"
+                        />
+                      </div>
                     </Link>
                     <div className="text-foreground absolute top-3 right-3 rounded bg-black/70 px-2 py-1 text-xs">
                       {new Date(item.createdAt).toLocaleDateString("ja-JP")}
