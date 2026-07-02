@@ -2,52 +2,91 @@
 
 AIを活用してランディングページ（LP）を自動生成・編集できるWebアプリです。
 
-## デモ
+## Demo
 
-デプロイURL：
-https://ai-lp-generator-lemon.vercel.app/
+🌐 https://ai-lp-generator-lemon.vercel.app/
 
 ## スクリーンショット
 
 （あとで画像を追加）
 
-## 主な機能
+## Features
 
 - 🤖 OpenAIによるLP自動生成
 - 🖼️ Stability AIによるHero画像生成
-- ✨ AIによるLP文章の改善
-- ✏️ LP編集機能
-- 📷 Hero画像変更
-- ↕️ ドラッグ&ドロップによる並び替え
+- ✨ AIによるLP文章改善
+- ✏️ LP編集
+- 📜 LP履歴管理
+- 👀 LPプレビュー
+- 📦 ZIPダウンロード
+- 📊 Dashboard
+- ⚙️ Settings
+- 💳 Pricingページ
+- 🌙 ダークモード対応
 - 🎨 テンプレート切り替え
 - 📱 レスポンシブ対応
 - 🔗 OGP対応
-- 🗑️ LP削除機能
+- 🗑️ LP削除
 
-## 使用技術
+## Tech Stack
 
-- Next.js 16
+- Next.js 16 (App Router)
 - React 19
 - TypeScript
 - Tailwind CSS v4
-- Prisma
+- Prisma ORM
 - PostgreSQL (Supabase)
-- Clerk
+- Clerk Authentication
 - OpenAI API
 - Stability AI API
-- dnd-kit
 - shadcn/ui
+- dnd-kit
+- Lucide React
 
+## Development Status
+
+🚧 Work in Progress
+
+### Completed
+
+- Dashboard
+- History
+- LP Preview
+- LP Edit
+- Settings
+- Pricing
+- Theme Toggle
+- ZIP Download
+- Responsive Design
+
+### Planned
+
+- Stripe Subscription
+- Pro Plan
+- Analytics
+- More Templates
+- PDF Export
+  
 ## セットアップ
 
 ```bash
-git clone ...
+git clone https://github.com/nozojj/ai-lp-generator.git
+cd ai-lp-generator
 npm install
 npm run dev
 ```
 
-## 今後追加予定
+## Environment Variables
 
-- テンプレートの追加
-- PDF出力
-- 多言語対応
+Create `.env.local`
+
+```env
+DATABASE_URL=
+OPENAI_API_KEY=
+STABILITY_API_KEY=
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+OWNER_CLERK_ID=
+```
+
