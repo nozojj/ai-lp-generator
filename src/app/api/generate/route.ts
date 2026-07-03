@@ -1,20 +1,48 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import axios from "axios";
+import { canAccessOwnerGatedFeature } from "@/lib/access";
+import { generateSchema, aiGenerationSchema } from "@/lib/validation";
+import { supabase } from "@/lib/supabase";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+const OWNER_ID = process.env.OWNER_CLERK_ID;
+
+async function refundCredit(userDbId: string) {
+  await prisma.user
+    .update({
+      where: { id: userDbId },
+      data: { credits: { increment: 1 } },
+    })
+    .catch((error) => console.error("Failed to refund credit:", error));
+}
+
 export async function POST(req: Request) {
-  const OWNER_ID = process.env.OWNER_CLERK_ID;
+  let reservedUserDbId: string | null = null;
+
   try {
     const { userId } = await auth();
 
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const rateLimit = checkRateLimit(`generate:${userId}`, 5, 60_000);
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "リクエストが多すぎます。しばらくしてから再度お試しください。" },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+        },
+      );
     }
 
     let user = await prisma.user.findUnique({
@@ -24,16 +52,28 @@ export async function POST(req: Request) {
     });
 
     if (!user) {
-      user = await prisma.user.create({
-        data: {
-          clerkId: userId,
-          credits: userId === OWNER_ID ? 9999 : 0,
-        },
-      });
+      const clerkUser = await currentUser();
+
+      try {
+        user = await prisma.user.create({
+          data: {
+            clerkId: userId,
+            name: clerkUser?.fullName ?? null,
+            credits: userId === OWNER_ID ? 9999 : 0,
+          },
+        });
+      } catch {
+        // Another concurrent request created the row first — fetch it.
+        user = await prisma.user.findUnique({ where: { clerkId: userId } });
+      }
     }
 
-    if (userId === OWNER_ID && user && user.credits < 9999) {
-      await prisma.user.update({
+    if (!user) {
+      return NextResponse.json({ error: "Failed" }, { status: 500 });
+    }
+
+    if (userId === OWNER_ID && user.credits < 9999) {
+      user = await prisma.user.update({
         where: {
           clerkId: userId,
         },
@@ -41,33 +81,45 @@ export async function POST(req: Request) {
           credits: 9999,
         },
       });
-
-      user.credits = 9999;
     }
 
-    if (userId !== OWNER_ID) {
+    if (!canAccessOwnerGatedFeature(userId)) {
       return NextResponse.json(
-        { error: "現在決済は停止中です" },
+        { error: "現在はベータ版のためオーナーのみ利用可能です" },
         { status: 403 },
       );
     }
-    console.log({
-      credits: user.credits,
-      isPro: user.isPro,
-      clerkId: user.clerkId,
-    });
 
-    if (!user.isPro && user.credits <= 0) {
-      return NextResponse.json({ error: "クレジット不足" }, { status: 402 });
-    }
+    const parsedBody = generateSchema.safeParse(await req.json());
 
-    const body = await req.json();
-
-    if (!body.business || !body.target || !body.atmosphere || !body.template) {
+    if (!parsedBody.success) {
       return NextResponse.json(
         { error: "入力内容が不足しています" },
         { status: 400 },
       );
+    }
+
+    const body = parsedBody.data;
+
+    // Atomically reserve one credit before doing any paid API work, so two
+    // concurrent requests can't both pass a stale credits > 0 check and
+    // drive the balance negative.
+    if (!user.isPro) {
+      const reserved = await prisma.user.updateMany({
+        where: {
+          id: user.id,
+          credits: { gt: 0 },
+        },
+        data: {
+          credits: { decrement: 1 },
+        },
+      });
+
+      if (reserved.count === 0) {
+        return NextResponse.json({ error: "クレジット不足" }, { status: 402 });
+      }
+
+      reservedUserDbId = user.id;
     }
 
     const prompt = `
@@ -146,17 +198,21 @@ faqにはユーザーが気になりそうな質問と回答を3個作成して�
     let parsed;
 
     try {
-      parsed = JSON.parse(cleaned!);
+      const validated = aiGenerationSchema.parse(JSON.parse(cleaned!));
+
+      parsed = validated;
     } catch (error) {
-      console.error("JSON Parse Error:", cleaned);
+      console.error("AI response validation failed:", error, cleaned);
+
+      if (reservedUserDbId) {
+        await refundCredit(reservedUserDbId);
+      }
 
       return NextResponse.json(
         { error: "AIが正しいJSONを返しませんでした。" },
         { status: 500 },
       );
     }
-
-    console.log(parsed);
 
     const imagePromptResponse = await client.chat.completions.create({
       model: "gpt-4.1-mini",
@@ -181,8 +237,6 @@ faqにはユーザーが気になりそうな質問と回答を3個作成して�
 
     const imagePrompt = imagePromptResponse.choices[0].message.content || "";
 
-    console.log("imagePrompt:", imagePrompt);
-
     const imageResponse = await axios.postForm(
       "https://api.stability.ai/v2beta/stable-image/generate/core",
       {
@@ -199,13 +253,29 @@ faqにはユーザーが気になりそうな質問と回答を3個作成して�
       },
     );
 
-    console.log("status:", imageResponse.status);
+    let imageUrl: string | null = null;
 
-    console.log("image length:", imageResponse.data.length);
+    if (imageResponse.status === 200) {
+      const fileName = `${user.id}-${Date.now()}.png`;
 
-    const imageBase64 = Buffer.from(imageResponse.data).toString("base64");
+      const { error: uploadError } = await supabase.storage
+        .from("lp-images")
+        .upload(`public/${fileName}`, Buffer.from(imageResponse.data), {
+          contentType: "image/png",
+        });
 
-    const imageUrl = `data:image/png;base64,${imageBase64}`;
+      if (uploadError) {
+        console.error("Hero image upload failed:", uploadError);
+      } else {
+        const { data } = supabase.storage
+          .from("lp-images")
+          .getPublicUrl(`public/${fileName}`);
+
+        imageUrl = data.publicUrl;
+      }
+    } else {
+      console.error("Stability AI request failed:", imageResponse.status);
+    }
 
     let generation;
 
@@ -230,17 +300,6 @@ faqにはユーザーが気になりそうな質問と回答を3個作成して�
             faq: parsed.faq,
             imageUrl,
             testimonials: parsed.testimonials,
-          },
-        });
-
-        await tx.user.update({
-          where: {
-            clerkId: userId,
-          },
-          data: {
-            credits: {
-              decrement: 1,
-            },
           },
         });
 
@@ -293,7 +352,11 @@ faqにはユーザーが気になりそうな質問と回答を3個作成して�
       result: parsed,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+
+    if (reservedUserDbId) {
+      await refundCredit(reservedUserDbId);
+    }
 
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }

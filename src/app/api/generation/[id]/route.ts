@@ -1,10 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { editSchema } from "@/lib/validation";
+import { NextResponse } from "next/server";
 
-export async function POST(
-  req: Request,
+export async function DELETE(
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
@@ -40,36 +39,16 @@ export async function POST(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const parsedBody = editSchema.safeParse(await req.json());
-
-    if (!parsedBody.success) {
-      return NextResponse.json({ error: "入力内容が不正です" }, { status: 400 });
-    }
-
-    const body = parsedBody.data;
-
-    const updated = await prisma.generation.update({
+    await prisma.generation.delete({
       where: {
         id,
       },
-      data: {
-        hero: body.hero,
-        cta: body.cta,
-        features: body.features,
-        benefits: body.benefits,
-        faq: body.faq,
-        testimonials: body.testimonials,
-
-        ...(body.imageUrl && {
-          imageUrl: body.imageUrl,
-        }),
-      },
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({ error: "更新失敗" }, { status: 500 });
+    return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }

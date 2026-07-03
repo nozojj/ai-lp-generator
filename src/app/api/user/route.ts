@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 
@@ -18,11 +18,23 @@ export async function GET() {
     });
 
     if (!user) {
-      user = await prisma.user.create({
-        data: {
-          clerkId: userId,
-        },
-      });
+      const clerkUser = await currentUser();
+
+      try {
+        user = await prisma.user.create({
+          data: {
+            clerkId: userId,
+            name: clerkUser?.fullName ?? null,
+          },
+        });
+      } catch {
+        // Another concurrent request created the row first — fetch it.
+        user = await prisma.user.findUnique({ where: { clerkId: userId } });
+      }
+    }
+
+    if (!user) {
+      return NextResponse.json({ error: "Failed" }, { status: 500 });
     }
 
     return NextResponse.json({
@@ -30,7 +42,7 @@ export async function GET() {
       isPro: user.isPro,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }

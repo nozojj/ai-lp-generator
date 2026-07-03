@@ -10,6 +10,7 @@ datasource db {
 model User {
   id          String       @id @default(cuid())
   clerkId     String       @unique
+  name        String?
   credits     Int          @default(0)
   isPro       Boolean      @default(false)
   createdAt   DateTime     @default(now())
@@ -34,7 +35,9 @@ model Generation {
   imageUrl   String?
   template String @default("modern")
   createdAt  DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model CreditHistory {
@@ -45,4 +48,12 @@ model CreditHistory {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model WebhookEvent {
+  id            String   @id @default(cuid())
+  stripeEventId String   @unique
+  createdAt     DateTime @default(now())
 }

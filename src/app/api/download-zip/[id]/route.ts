@@ -1,6 +1,8 @@
 import JSZip from "jszip";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { escapeHtml } from "@/lib/utils";
+import { renderCardList, renderTestimonials, renderFaq } from "@/lib/lp-html";
 
 export async function GET(
   request: Request,
@@ -22,57 +24,12 @@ export async function GET(
 
   const zip = new JSZip();
 
-  const testimonials = (
-    item.testimonials as {
-      name: string;
-      comment: string;
-    }[]
-  )
-    .map(
-      (review) => `
-      <div class="card">
-        <h3>${review.name}</h3>
-        <p>${review.comment}</p>
-      </div>
-    `,
-    )
-    .join("");
-
-  const faq = (
-    item.faq as {
-      question: string;
-      answer: string;
-    }[]
-  )
-    .map(
-      (item) => `
-      <div class="card">
-        <h3>${item.question}</h3>
-        <p>${item.answer}</p>
-      </div>
-    `,
-    )
-    .join("");
-
-  const features = (item.features as string[])
-    .map(
-      (feature) => `
-      <div class="card">
-        <h3>${feature}</h3>
-      </div>
-    `,
-    )
-    .join("");
-
-  const benefits = (item.benefits as string[])
-    .map(
-      (benefit) => `
-      <div class="card">
-        <h3>${benefit}</h3>
-      </div>
-    `,
-    )
-    .join("");
+  const testimonials = renderTestimonials(
+    item.testimonials as { name: string; comment: string }[],
+  );
+  const faq = renderFaq(item.faq as { question: string; answer: string }[]);
+  const features = renderCardList(item.features as string[]);
+  const benefits = renderCardList(item.benefits as string[]);
 
   const html = `
 <!DOCTYPE html>
@@ -81,12 +38,12 @@ export async function GET(
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>${item.hero}</title>
+<title>${escapeHtml(item.hero)}</title>
 
-<meta name="description" content="${item.cta}" />
+<meta name="description" content="${escapeHtml(item.cta)}" />
 
-<meta property="og:title" content="${item.hero}" />
-<meta property="og:description" content="${item.cta}" />
+<meta property="og:title" content="${escapeHtml(item.hero)}" />
+<meta property="og:description" content="${escapeHtml(item.cta)}" />
 <meta property="og:type" content="website" />
 
 <link rel="stylesheet" href="style.css">
@@ -98,11 +55,11 @@ export async function GET(
 <section class="hero">
 
 <img src="logo.jpg" class="logo" alt="Logo">
-  <h1>${item.hero}</h1>
+  <h1>${escapeHtml(item.hero)}</h1>
 
-  <p>${item.cta}</p>
+  <p>${escapeHtml(item.cta)}</p>
 
-  <a class="button" href="${item.ctaUrl ?? "#"}">
+  <a class="button" href="${escapeHtml(item.ctaUrl ?? "#")}">
     無料体験はこちら
   </a>
 </section>
@@ -151,7 +108,7 @@ export async function GET(
     あなたの理想の身体づくりを、今日からスタートしましょう。
   </p>
 
-  <a class="button" href="${item.ctaUrl ?? "#"}">
+  <a class="button" href="${escapeHtml(item.ctaUrl ?? "#")}">
     無料体験はこちら
   </a>
 

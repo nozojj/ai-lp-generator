@@ -5,16 +5,12 @@ import { stripe } from "@/lib/stripe";
 
 
 export async function POST(req: Request) {
-  console.log("Webhook hit");
-
   const body = await req.text();
 
   const headerList = await headers();
   const signature = headerList.get("stripe-signature");
 
   if (!signature) {
-    console.log("No signature");
-
     return NextResponse.json({ error: "No signature" }, { status: 400 });
   }
 
@@ -26,24 +22,23 @@ export async function POST(req: Request) {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!,
     );
-
-    console.log("Event type:", event.type);
   } catch (error) {
-    console.log("Webhook Error:", error);
+    console.error("Webhook signature verification failed:", error);
 
     return NextResponse.json({ error: "Webhook Error" }, { status: 400 });
   }
 
   if (event.type === "checkout.session.completed") {
-    console.log("Checkout completed");
+    try {
+      await prisma.webhookEvent.create({
+        data: { stripeEventId: event.id },
+      });
+    } catch {
+      return NextResponse.json({ received: true });
+    }
 
     const session = event.data.object;
-
-    console.log("Metadata:", session.metadata);
-
     const clerkId = session.metadata?.clerkId;
-
-    console.log("Clerk ID:", clerkId);
 
     if (clerkId) {
       await prisma.user.update({
@@ -57,8 +52,6 @@ export async function POST(req: Request) {
           isPro: true,
         },
       });
-
-      console.log("Credits added");
     }
   }
 
