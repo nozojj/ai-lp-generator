@@ -28,7 +28,7 @@ export default function DownloadHtmlButton({ id }: { id: string }) {
       ) : (
         <>
           <Download className="mr-2 h-4 w-4" />
-          📦 Download LP ZIP
+          HTMLをダウンロード
         </>
       )}
     </Button>

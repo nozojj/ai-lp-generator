@@ -2,18 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import DeleteButton from "@/components/DeleteButton";
 import Image from "next/image";
+import { ImageOff } from "lucide-react";
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
 
 type Generation = {
   id: string;
@@ -25,12 +16,44 @@ type Generation = {
   features: unknown;
 };
 
+type Group = {
+  label: string;
+  items: Generation[];
+};
+
+function groupByDate(data: Generation[]): Group[] {
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const startOfWeek = new Date(startOfToday);
+  startOfWeek.setDate(startOfWeek.getDate() - 6);
+
+  const groups: Group[] = [
+    { label: "今日", items: [] },
+    { label: "今週", items: [] },
+    { label: "それ以前", items: [] },
+  ];
+
+  for (const item of data) {
+    const createdAt = new Date(item.createdAt);
+
+    if (createdAt >= startOfToday) {
+      groups[0].items.push(item);
+    } else if (createdAt >= startOfWeek) {
+      groups[1].items.push(item);
+    } else {
+      groups[2].items.push(item);
+    }
+  }
+
+  return groups.filter((group) => group.items.length > 0);
+}
+
 export default function HistoryList({ data }: { data: Generation[] }) {
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("newest");
-  const filteredData = data.filter((item) => {
-    const keyword = search.toLowerCase();
 
+  const keyword = search.toLowerCase();
+  const filteredData = data.filter((item) => {
     return (
       item.hero.toLowerCase().includes(keyword) ||
       item.business.toLowerCase().includes(keyword) ||
@@ -38,51 +61,19 @@ export default function HistoryList({ data }: { data: Generation[] }) {
     );
   });
 
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (sort === "newest") {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    }
-
-    if (sort === "oldest") {
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    }
-
-    if (sort === "business") {
-      return a.business.localeCompare(b.business, "ja");
-    }
-
-    return 0;
-  });
+  const groups = groupByDate(filteredData);
 
   return (
     <>
-      <div className="mb-6 flex gap-4">
-        <Input
-          type="text"
-          placeholder="🔍 タイトル・業種で検索..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex-1"
-        />
+      <Input
+        type="text"
+        placeholder="🔍 タイトル・業種で検索..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="mb-6"
+      />
 
-        <div>
-          <Label className="sr-only">並び替え</Label>
-
-          <Select value={sort} onValueChange={setSort}>
-            <SelectTrigger className="h-10 w-40">
-              <SelectValue />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="newest">新しい順</SelectItem>
-              <SelectItem value="oldest">古い順</SelectItem>
-              <SelectItem value="business">業種順</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      {filteredData.length === 0 ? (
+      {groups.length === 0 ? (
         <div className="bg-card border-border rounded-xl border p-10 text-center">
           <h2 className="text-2xl font-bold">該当する履歴がありません</h2>
 
@@ -91,70 +82,54 @@ export default function HistoryList({ data }: { data: Generation[] }) {
           </p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {sortedData.map((item) => (
-            <div key={item.id}>
-              <div className="bg-card border-border overflow-hidden rounded-xl border transition-all duration-200 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-[0_20px_60px_rgba(16,185,129,0.18)]">
-                {item.imageUrl && (
-                  <div className="relative">
-                    <Link href={`/history/${item.id}`}>
-                      <div className="relative h-56 w-full overflow-hidden">
+        <div className="space-y-8">
+          {groups.map((group) => (
+            <div key={group.label}>
+              <h3 className="text-muted-foreground mb-3 text-sm font-semibold">
+                {group.label} ({group.items.length}件)
+              </h3>
+
+              <div className="space-y-2">
+                {group.items.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={`/history/${item.id}`}
+                    className="bg-card border-border flex items-center gap-4 rounded-xl border p-3 transition-colors hover:border-emerald-500/40"
+                  >
+                    <div className="bg-muted relative h-14 w-20 shrink-0 overflow-hidden rounded-lg">
+                      {item.imageUrl ? (
                         <Image
                           src={item.imageUrl}
-                          alt={item.business}
+                          alt={item.hero}
                           fill
-                          className="object-cover transition-transform duration-300 hover:scale-105"
+                          className="object-cover"
+                          unoptimized
                         />
-                      </div>
-                    </Link>
-                    <div className="text-foreground absolute top-3 right-3 rounded bg-black/70 px-2 py-1 text-xs">
-                      {new Date(item.createdAt).toLocaleDateString("ja-JP")}
-                    </div>
-                  </div>
-                )}
-
-                <div className="p-6">
-                  <p className="bg-muted text-muted-foreground inline-flex rounded-full px-3 py-1 text-sm">
-                    {item.business}
-                  </p>
-
-                  <Link href={`/history/${item.id}`} className="mb-4 block">
-                    <h2 className="line-clamp-2 text-xl font-bold transition-colors hover:text-emerald-400">
-                      {item.hero}
-                    </h2>
-                  </Link>
-
-                  <p className="text-muted-foreground mb-4 text-sm">
-                    {item.cta}
-                  </p>
-
-                  <div className="space-y-2">
-                    {Array.isArray(item.features) &&
-                      item.features.slice(0, 2).map((feature, index) => (
-                        <div
-                          key={index}
-                          className="bg-muted text-muted-foreground rounded-lg p-3"
-                        >
-                          {String(feature)}
+                      ) : (
+                        <div className="text-muted-foreground flex h-full w-full items-center justify-center">
+                          <ImageOff size={16} />
                         </div>
-                      ))}
-                  </div>
+                      )}
+                    </div>
 
-                  {Array.isArray(item.features) && item.features.length > 2 && (
-                    <p className="text-muted-foreground text-sm">
-                      +{item.features.length - 2}件
-                    </p>
-                  )}
-                  <div className="mt-4 grid grid-cols-2 gap-3">
-                    <Link href={`/preview/${item.id}`} target="_blank">
-                      <Button className="h-10 w-full bg-blue-600 hover:bg-blue-700">
-                        LPプレビュー
-                      </Button>
-                    </Link>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="truncate font-semibold">{item.hero}</h4>
 
-                    <DeleteButton id={item.id} />
-                  </div>
-                </div>
+                      <span className="bg-muted text-muted-foreground mt-1 inline-flex rounded-full px-3 py-1 text-xs">
+                        {item.business}
+                      </span>
+                    </div>
+
+                    <span className="text-muted-foreground shrink-0 text-xs">
+                      {new Date(item.createdAt).toLocaleString("ja-JP", {
+                        month: "numeric",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </Link>
+                ))}
               </div>
             </div>
           ))}

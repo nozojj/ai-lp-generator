@@ -4,8 +4,10 @@ import DownloadHtmlButton from "@/components/DownloadHtmlButton";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Eye, Pencil } from "lucide-react";
 
 export default async function HistoryDetailPage({
   params,
@@ -77,9 +79,21 @@ ${
       >
         ← 履歴一覧へ戻る
       </Link>
-      <div className="mx-auto max-w-3xl space-y-6">
+      <div className="space-y-6">
+        {item.imageUrl && (
+          <div className="border-border relative h-72 w-full overflow-hidden rounded-xl border">
+            <Image
+              src={item.imageUrl}
+              alt={item.hero}
+              fill
+              className="object-cover"
+              unoptimized
+            />
+          </div>
+        )}
+
         <div className="flex items-start justify-between gap-10">
-          <div className="max-w-2xl flex-1">
+          <div className="max-w-4xl flex-1">
             <PageHeader
               label="History"
               title={item.hero}
@@ -91,17 +105,29 @@ ${
             </p>
           </div>
 
-          <div className="flex w-48 flex-col gap-3">
+          <div className="flex w-56 flex-col gap-3">
             <CopyButton text={copyText} />
 
             <DownloadHtmlButton id={item.id} />
 
-            <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
-              <Link href={`/preview/${item.id}`}>LPプレビュー</Link>
+            <Button
+              asChild
+              className="h-11 w-full bg-blue-600 hover:bg-blue-700"
+            >
+              <Link href={`/preview/${item.id}`}>
+                <Eye className="mr-2 h-4 w-4" />
+                LPプレビュー
+              </Link>
             </Button>
 
-            <Button asChild className="w-full bg-amber-500 hover:bg-amber-600">
-              <Link href={`/edit/${item.id}`}>編集</Link>
+            <Button
+              asChild
+              className="h-11 w-full bg-amber-500 hover:bg-amber-600"
+            >
+              <Link href={`/edit/${item.id}`}>
+                <Pencil className="mr-2 h-4 w-4" />
+                編集
+              </Link>
             </Button>
           </div>
         </div>

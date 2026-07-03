@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 type PricingCardProps = {
@@ -8,7 +12,7 @@ type PricingCardProps = {
   buttonText: string;
   recommended?: boolean;
   disabled?: boolean;
-  onClick?: () => void;
+  checkoutEnabled?: boolean;
 };
 
 export default function PricingCard({
@@ -19,8 +23,31 @@ export default function PricingCard({
   buttonText,
   recommended,
   disabled,
-  onClick,
+  checkoutEnabled,
 }: PricingCardProps) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleUpgradeClick() {
+    setIsLoading(true);
+
+    try {
+      const res = await fetch("/api/checkout", { method: "POST" });
+      const data = await res.json();
+
+      if (!res.ok || !data.url) {
+        toast.error(data.error ?? "決済ページの作成に失敗しました");
+        return;
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error(error);
+      toast.error("通信エラーが発生しました");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div
       className={`rounded-2xl border p-8 ${
@@ -45,8 +72,12 @@ export default function PricingCard({
         ))}
       </ul>
 
-      <Button onClick={onClick} disabled={disabled} className="mt-8 w-full">
-        {buttonText}
+      <Button
+        onClick={checkoutEnabled ? handleUpgradeClick : undefined}
+        disabled={disabled || isLoading}
+        className="mt-8 w-full"
+      >
+        {isLoading ? "処理中..." : buttonText}
       </Button>
     </div>
   );

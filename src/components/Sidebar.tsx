@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { LayoutDashboard, FileText, Coins, Settings } from "lucide-react";
+import {
+  Home,
+  LayoutDashboard,
+  Layers,
+  History as HistoryIcon,
+  Coins,
+  Settings,
+} from "lucide-react";
 import ThemeToggle from "./theme-toggle";
 
 export default function Sidebar() {
@@ -12,6 +19,14 @@ export default function Sidebar() {
 
       <nav className="space-y-2">
         <Link
+          href="/"
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-lg p-3 transition-colors"
+        >
+          <Home size={20} />
+          Home
+        </Link>
+
+        <Link
           href="/dashboard"
           className="hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-lg p-3 transition-colors"
         >
@@ -20,11 +35,19 @@ export default function Sidebar() {
         </Link>
 
         <Link
-          href="/dashboard"
+          href="/mylp"
           className="hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-lg p-3 transition-colors"
         >
-          <FileText size={20} />
+          <Layers size={20} />
           My LP
+        </Link>
+
+        <Link
+          href="/history"
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-lg p-3 transition-colors"
+        >
+          <HistoryIcon size={20} />
+          History
         </Link>
 
         <Link
