@@ -8,7 +8,7 @@ import HeroSection from "./HeroSection";
 import GeneratorForm from "./GeneratorForm";
 import PreviewSection from "./PreviewSection";
 import HowItWorksSection from "./HowItWorksSection";
-import { previewResult } from "@/constants/preview-result";
+import { buildLivePreview } from "@/lib/live-preview";
 import { status } from "@/constants/status";
 import { useCredits } from "@/hooks/useCredits";
 import { useGenerateLP } from "@/hooks/useGenerateLP";
@@ -43,7 +43,8 @@ export default function Home() {
     y: 0,
   });
 
-  const displayResult = result ?? previewResult;
+  const displayResult =
+    result ?? buildLivePreview(business, target, atmosphere);
 
   const heroWords = displayResult.hero.split("");
 
@@ -96,6 +97,8 @@ export default function Home() {
         heroWords={heroWords}
         business={business}
         target={target}
+        template={template}
+        isLive={!result}
         imageRotate={imageRotate}
         setImageRotate={setImageRotate}
         benefitIcons={benefitIcons}

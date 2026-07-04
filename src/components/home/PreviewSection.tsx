@@ -5,12 +5,15 @@ import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import type { Result } from "@/types/result";
+import { getTemplateTheme } from "@/lib/template-theme";
 
 type PreviewSectionProps = {
   displayResult: Result;
   heroWords: string[];
   business: string;
   target: string;
+  template: string;
+  isLive: boolean;
 
   imageRotate: {
     x: number;
@@ -34,12 +37,15 @@ export default function PreviewSection({
   heroWords,
   business,
   target,
+  template,
+  isLive,
   imageRotate,
   setImageRotate,
   benefitIcons,
   featureIcons,
   featureDescriptions,
 }: PreviewSectionProps) {
+  const theme = getTemplateTheme(template);
   return (
     <>
       {displayResult && (
@@ -77,11 +83,20 @@ export default function PreviewSection({
 
               <CardContent className="grid items-center gap-12 p-14 md:grid-cols-[1.2fr_1fr]">
                 <div className="text-center md:text-left">
-                  <p className="mb-3 text-sm font-medium text-cyan-300">
-                    AI Generated Preview
+                  <p className="mb-3 flex items-center justify-center gap-2 text-sm font-medium text-cyan-300 md:justify-start">
+                    {isLive && (
+                      <motion.span
+                        animate={{ opacity: [1, 0.4, 1] }}
+                        transition={{ duration: 1.4, repeat: Infinity }}
+                        className="h-2 w-2 rounded-full bg-cyan-400"
+                      />
+                    )}
+                    {isLive ? "ライブプレビュー" : "AI Generated Preview"}
                   </p>
 
-                  <h1 className="max-w-xl bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-5xl leading-tight font-bold text-transparent drop-shadow-[0_0_25px_rgba(34,211,238,.25)] md:text-6xl">
+                  <h1
+                    className={`max-w-xl bg-gradient-to-r ${theme.heroGradient} bg-clip-text text-5xl leading-tight font-bold text-transparent drop-shadow-[0_0_25px_rgba(34,211,238,.25)] md:text-6xl`}
+                  >
                     {heroWords.map((char, index) => (
                       <motion.span
                         key={index}
@@ -116,7 +131,12 @@ export default function PreviewSection({
                     面倒な制作工程を一瞬で完了します。
                   </p>
                   <div className="mt-10 flex justify-center md:justify-start">
-                    <Button className="group relative mt-10 h-16 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-12 text-xl font-bold shadow-[0_0_40px_rgba(34,211,238,.45)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_70px_rgba(34,211,238,.8)]">
+                    <Button
+                      className={`group relative mt-10 h-16 rounded-2xl bg-gradient-to-r ${theme.ctaGradient} px-12 text-xl font-bold shadow-[0_0_40px_rgba(34,211,238,.45)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_70px_rgba(34,211,238,.8)]`}
+                      style={{
+                        boxShadow: `0 0 40px ${theme.glow}`,
+                      }}
+                    >
                       <div className="absolute inset-0 overflow-hidden rounded-2xl">
                         <motion.div
                           animate={{

@@ -7,7 +7,8 @@ import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Eye, Pencil } from "lucide-react";
+import { Eye, Pencil, Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default async function HistoryDetailPage({
   params,
@@ -72,7 +73,7 @@ ${
 `;
 
   return (
-    <main className="bg-background text-foreground min-h-screen p-8">
+    <main className="text-foreground min-h-screen p-8">
       <Link
         href="/history"
         className="text-muted-foreground hover:text-foreground mb-8 inline-block transition"
@@ -94,15 +95,18 @@ ${
 
         <div className="flex items-start justify-between gap-10">
           <div className="max-w-4xl flex-1">
-            <PageHeader
-              label="History"
-              title={item.hero}
-              description={new Date(item.createdAt).toLocaleString("ja-JP")}
-            />
+            <PageHeader label="History" title={item.hero} />
 
-            <p className="bg-muted text-muted-foreground inline-flex rounded-full px-3 py-1 text-sm">
-              {item.business}
-            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="muted">
+                <Clock />
+                {new Date(item.createdAt).toLocaleString("ja-JP")}
+              </Badge>
+
+              <p className="bg-muted text-muted-foreground inline-flex rounded-full px-3 py-1 text-sm">
+                {item.business}
+              </p>
+            </div>
           </div>
 
           <div className="flex w-56 flex-col gap-3">
@@ -114,7 +118,7 @@ ${
               asChild
               className="h-11 w-full bg-blue-600 hover:bg-blue-700"
             >
-              <Link href={`/preview/${item.id}`}>
+              <Link href={`/lp/${item.id}`} target="_blank">
                 <Eye className="mr-2 h-4 w-4" />
                 LPプレビュー
               </Link>

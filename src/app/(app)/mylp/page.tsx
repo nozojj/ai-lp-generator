@@ -56,7 +56,7 @@ export default async function MyLpPage({
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
-    <main className="bg-background text-foreground min-h-screen p-10">
+    <main className="text-foreground min-h-screen p-10">
       <PageHeader
         label="My LP"
         title="マイLP一覧"

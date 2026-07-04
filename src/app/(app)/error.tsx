@@ -10,7 +10,7 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <main className="text-foreground flex min-h-screen flex-col items-center justify-center bg-slate-950 px-6">
+    <main className="text-foreground flex min-h-screen flex-col items-center justify-center px-6">
       <h1 className="text-7xl font-black text-red-500">Oops...</h1>
 
       <h2 className="mt-6 text-3xl font-bold">エラーが発生しました</h2>

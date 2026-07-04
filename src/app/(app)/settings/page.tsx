@@ -39,7 +39,7 @@ export default async function SettingsPage() {
   const APP_VERSION = "1.0.0";
 
   return (
-    <main className="bg-background text-foreground min-h-screen p-8">
+    <main className="text-foreground min-h-screen p-8">
       <PageHeader
         label="Settings"
         title="設定"

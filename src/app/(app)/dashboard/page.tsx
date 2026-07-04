@@ -5,6 +5,37 @@ import StatsCard from "@/components/dashboard/StatsCard";
 import PageHeader from "@/components/common/PageHeader";
 import { FileText, Zap, Crown, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { getTemplateBadgeVariant } from "@/lib/tag-colors";
+import GenerationTrendChart, {
+  type TrendPoint,
+} from "@/components/dashboard/GenerationTrendChart";
+
+const TREND_DAYS = 30;
+
+function buildTrendData(dates: Date[]): TrendPoint[] {
+  const startOfRange = new Date();
+  startOfRange.setHours(0, 0, 0, 0);
+  startOfRange.setDate(startOfRange.getDate() - (TREND_DAYS - 1));
+
+  const countsByDate = new Map<string, number>();
+  for (const date of dates) {
+    const key = date.toISOString().slice(0, 10);
+    countsByDate.set(key, (countsByDate.get(key) ?? 0) + 1);
+  }
+
+  return Array.from({ length: TREND_DAYS }, (_, i) => {
+    const d = new Date(startOfRange);
+    d.setDate(d.getDate() + i);
+    const key = d.toISOString().slice(0, 10);
+
+    return {
+      date: key,
+      label: `${d.getMonth() + 1}/${d.getDate()}`,
+      count: countsByDate.get(key) ?? 0,
+    };
+  });
+}
 
 export const metadata: Metadata = {
   title: "Dashboard | AI LP Generator",
@@ -30,7 +61,11 @@ export default async function DashboardPage() {
   startOfMonth.setDate(1);
   startOfMonth.setHours(0, 0, 0, 0);
 
-  const [total, thisMonth, recent] = await Promise.all([
+  const startOfTrend = new Date();
+  startOfTrend.setHours(0, 0, 0, 0);
+  startOfTrend.setDate(startOfTrend.getDate() - (TREND_DAYS - 1));
+
+  const [total, thisMonth, recent, trendGenerations] = await Promise.all([
     prisma.generation.count({
       where: { userId: user.id },
     }),
@@ -45,13 +80,21 @@ export default async function DashboardPage() {
         id: true,
         hero: true,
         business: true,
+        target: true,
+        template: true,
         createdAt: true,
       },
     }),
+    prisma.generation.findMany({
+      where: { userId: user.id, createdAt: { gte: startOfTrend } },
+      select: { createdAt: true },
+    }),
   ]);
 
+  const trendData = buildTrendData(trendGenerations.map((g) => g.createdAt));
+
   return (
-    <main className="bg-background text-foreground min-h-screen p-10">
+    <main className="text-foreground min-h-screen p-10">
       <PageHeader
         label="Dashboard"
         title="マイLP"
@@ -95,6 +138,13 @@ export default async function DashboardPage() {
           icon={TrendingUp}
         />
       </div>
+      <div className="bg-card border-border mb-8 rounded-xl border p-6">
+        <h2 className="mb-4 text-lg font-semibold">
+          生成数の推移（過去{TREND_DAYS}日）
+        </h2>
+
+        <GenerationTrendChart data={trendData} />
+      </div>
       {recent.length > 0 && (
         <>
           <h2 className="mb-4 text-2xl font-semibold">
@@ -110,14 +160,23 @@ export default async function DashboardPage() {
                 <div>
                   <h3 className="line-clamp-2 font-semibold">{item.hero}</h3>
 
-                  <span className="bg-muted text-muted-foreground mt-2 inline-flex rounded-full px-3 py-1 text-xs">
-                    {item.business}
-                  </span>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <Badge variant="blue">{item.business}</Badge>
+
+                    <Badge variant="purple">{item.target}</Badge>
+
+                    <Badge
+                      variant={getTemplateBadgeVariant(item.template)}
+                      className="capitalize"
+                    >
+                      {item.template}
+                    </Badge>
+                  </div>
                 </div>
 
-                <span className="text-muted-foreground text-xs">
+                <Badge variant="muted">
                   {new Date(item.createdAt).toLocaleDateString("ja-JP")}
-                </span>
+                </Badge>
               </Link>
             ))}
 

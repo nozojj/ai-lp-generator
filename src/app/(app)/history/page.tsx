@@ -24,7 +24,7 @@ export default async function HistoryPage({
 
   if (!userId) {
     return (
-      <main className="bg-background text-foreground min-h-screen p-8">
+      <main className="text-foreground min-h-screen p-8">
         ログインしてください
       </main>
     );
@@ -38,7 +38,7 @@ export default async function HistoryPage({
 
   if (!user) {
     return (
-      <main className="bg-background text-foreground min-h-screen p-8">
+      <main className="text-foreground min-h-screen p-8">
         ユーザーが存在しません
       </main>
     );
@@ -67,7 +67,7 @@ export default async function HistoryPage({
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
-    <main className="bg-background text-foreground min-h-screen p-8">
+    <main className="text-foreground min-h-screen p-8">
       <PageHeader
         label="History"
         title="生成履歴"

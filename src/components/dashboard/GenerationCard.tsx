@@ -1,8 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Pencil, Globe } from "lucide-react";
+import { Pencil, Globe, Clock } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { getTemplateBadgeVariant } from "@/lib/tag-colors";
 import CopyPublicUrlButton from "@/components/CopyPublicUrlButton";
 import DeleteButton from "@/components/DeleteButton";
 import DownloadHtmlButton from "@/components/DownloadHtmlButton";
@@ -20,59 +22,63 @@ export default function GenerationCard({ item }: Props) {
 
   return (
     <div className="group border-border bg-card overflow-hidden rounded-2xl border shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-[0_20px_60px_rgba(16,185,129,0.18)]">
-      {item.imageUrl && (
-        <div className="relative h-56 w-full overflow-hidden">
-          <Link href={`/lp/${item.id}`} className="absolute inset-0 z-10" />
+      <Link href={`/lp/${item.id}`} className="block cursor-pointer">
+        {item.imageUrl && (
+          <div className="relative h-56 w-full overflow-hidden rounded-t-xl">
+            <Image
+              src={item.imageUrl}
+              alt={item.hero}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              unoptimized
+            />
 
-          <Image
-            src={item.imageUrl}
-            alt={item.hero}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            unoptimized
-          />
-
-          <div className="from-background absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t to-transparent" />
-        </div>
-      )}
-      <div className="p-6">
-        <Link href={`/lp/${item.id}`} className="block">
+            <div className="from-background absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t to-transparent" />
+          </div>
+        )}
+        <div className="p-6 pb-0">
           <h2 className="text-2xl leading-tight font-bold transition-colors duration-300 group-hover:text-emerald-400">
             {item.hero}
           </h2>
-        </Link>
 
-        <p className="text-muted-foreground mt-2 text-sm">
-          作成日：
-          {new Date(item.createdAt).toLocaleDateString("ja-JP")}
-        </p>
-        <div className="mt-2 flex items-center gap-2">
-          <span className="text-muted-foreground text-sm">テンプレート</span>
+          <div className="mt-2 flex items-center gap-2">
+            <Badge variant="muted">
+              <Clock />
+              {new Date(item.createdAt).toLocaleDateString("ja-JP")}
+            </Badge>
+          </div>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <Badge variant="blue">{item.business}</Badge>
+            <Badge variant="purple">{item.target}</Badge>
+            <Badge variant={getTemplateBadgeVariant(item.template)}>
+              {templateName}
+            </Badge>
+          </div>
+          <p className="text-muted-foreground mt-2 truncate text-sm">
+            雰囲気：
+            <span className="text-foreground font-semibold">
+              {item.atmosphere}
+            </span>
+          </p>
 
-          <span
-            className={`rounded-full border px-3 py-1 text-xs font-bold ${
-              item.template === "luxury"
-                ? "border-amber-500/30 bg-amber-500/20 text-amber-300"
-                : item.template === "minimal"
-                  ? "border-gray-400/30 bg-gray-500/20 text-gray-300"
-                  : item.template === "corporate"
-                    ? "border-slate-500/30 bg-slate-700/30 text-slate-200"
-                    : "border-blue-500/30 bg-blue-500/20 text-blue-300"
-            }`}
-          >
-            {templateName}
-          </span>
+          <div className="text-muted-foreground mt-2 flex flex-wrap gap-2 text-xs">
+            <span className="bg-muted rounded-full px-2.5 py-1">
+              特徴 {item.features.length}件
+            </span>
+
+            <span className="bg-muted rounded-full px-2.5 py-1">
+              ベネフィット {item.benefits.length}件
+            </span>
+          </div>
+
+          <p className="text-muted-foreground mt-2 line-clamp-2 min-h-[3rem]">
+            {item.cta}
+          </p>
         </div>
-        <p className="text-muted-foreground mt-1 text-sm">
-          業種：
-          <span className="font-semibold">{item.business}</span>
-        </p>
+      </Link>
 
-        <p className="text-muted-foreground mt-2 line-clamp-2 min-h-[3rem]">
-          {item.cta}
-        </p>
-
-        <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-3">
+      <div className="p-6">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
           <Link href={`/edit/${item.id}`}>
             <Button className="h-11 w-full">
               <Pencil className="mr-2 h-4 w-4" />

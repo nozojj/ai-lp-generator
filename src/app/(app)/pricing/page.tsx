@@ -14,7 +14,7 @@ export default async function PricingPage() {
       })
     : null;
   return (
-    <main className="bg-background text-foreground min-h-screen p-8">
+    <main className="text-foreground min-h-screen p-8">
       <PageHeader
         label="Pricing"
         title="料金プラン"

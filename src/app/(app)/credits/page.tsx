@@ -39,7 +39,7 @@ export default async function CreditsPage() {
   });
 
   return (
-    <main className="min-h-screen bg-background p-10 text-foreground">
+    <main className="min-h-screen p-10 text-foreground">
       <PageHeader
         label="Credits"
         title="クレジット履歴"

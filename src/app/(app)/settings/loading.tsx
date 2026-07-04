@@ -1,6 +1,6 @@
 export default function SettingsLoading() {
   return (
-    <main className="bg-background text-foreground min-h-screen p-8">
+    <main className="text-foreground min-h-screen p-8">
       <div className="mb-8 space-y-3">
         <div className="bg-muted h-4 w-24 animate-pulse rounded" />
         <div className="bg-muted h-10 w-32 animate-pulse rounded" />
