@@ -6,6 +6,7 @@ import {
   History as HistoryIcon,
   Coins,
   Settings,
+  Tag,
 } from "lucide-react";
 import ThemeToggle from "./theme-toggle";
 
@@ -56,6 +57,14 @@ export default function Sidebar() {
         >
           <Coins size={20} />
           Credits
+        </Link>
+
+        <Link
+          href="/pricing"
+          className="hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-lg p-3 transition-colors"
+        >
+          <Tag size={20} />
+          Pricing
         </Link>
 
         <Link

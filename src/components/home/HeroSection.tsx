@@ -1,22 +1,9 @@
 import HeroCard from "@/components/HeroCard";
+import { useParallax } from "@/hooks/useParallax";
 
-type HeroSectionProps = {
-  mouseParallax: {
-    x: number;
-    y: number;
-  };
-  setTargetParallax: React.Dispatch<
-    React.SetStateAction<{
-      x: number;
-      y: number;
-    }>
-  >;
-};
+export default function HeroSection() {
+  const { mouseParallax, setTargetParallax } = useParallax();
 
-export default function HeroSection({
-  mouseParallax,
-  setTargetParallax,
-}: HeroSectionProps) {
   return (
     <>
       <div className="mx-auto max-w-7xl">

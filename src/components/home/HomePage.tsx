@@ -12,7 +12,7 @@ import { previewResult } from "@/constants/preview-result";
 import { status } from "@/constants/status";
 import { useCredits } from "@/hooks/useCredits";
 import { useGenerateLP } from "@/hooks/useGenerateLP";
-import { useParallax } from "@/hooks/useParallax";
+import { useMouseGlow } from "@/hooks/useMouseGlow";
 import { useWorkflow } from "@/hooks/useWorkflow";
 import {
   benefitIcons,
@@ -31,8 +31,7 @@ export default function Home() {
 
   const displayStep = useWorkflow();
 
-  const { mouseLight, setMouseLight, mouseParallax, setTargetParallax } =
-    useParallax();
+  const { glowRef1, glowRef2, handleMouseMove } = useMouseGlow();
 
   const [business, setBusiness] = useState("");
   const [target, setTarget] = useState("");
@@ -50,13 +49,8 @@ export default function Home() {
 
   return (
     <main
-      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-zinc-950 via-zinc-900 to-black p-6 text-white"
-      onMouseMove={(e) => {
-        setMouseLight({
-          x: e.clientX,
-          y: e.clientY,
-        });
-      }}
+      className="bg-background text-foreground relative min-h-screen overflow-hidden p-6"
+      onMouseMove={handleMouseMove}
     >
       <LoadingDialog
         loading={loading}
@@ -68,24 +62,15 @@ export default function Home() {
         <HeroBackground />
       </div>
       <div
+        ref={glowRef1}
         className="pointer-events-none fixed h-96 w-96 rounded-full bg-blue-500/20 blur-3xl transition-all duration-150"
-        style={{
-          left: mouseLight.x - 192,
-          top: mouseLight.y - 192,
-        }}
       />
       <div
+        ref={glowRef2}
         className="pointer-events-none fixed h-96 w-96 rounded-full bg-cyan-400/10 blur-3xl"
-        style={{
-          left: mouseLight.x - 300,
-          top: mouseLight.y - 300,
-        }}
       />
 
-      <HeroSection
-        mouseParallax={mouseParallax}
-        setTargetParallax={setTargetParallax}
-      />
+      <HeroSection />
 
       <HowItWorksSection displayStep={displayStep} status={status} />
 

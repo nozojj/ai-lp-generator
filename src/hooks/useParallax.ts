@@ -3,11 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 
 export function useParallax() {
-  const [mouseLight, setMouseLight] = useState({
-    x: 0,
-    y: 0,
-  });
-
   const [targetParallax, setTargetParallax] = useState({
     x: 0,
     y: 0,
@@ -42,8 +37,6 @@ export function useParallax() {
   }, []);
 
   return {
-    mouseLight,
-    setMouseLight,
     mouseParallax,
     targetParallax,
     setTargetParallax,

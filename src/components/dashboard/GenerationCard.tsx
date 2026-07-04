@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Pencil, Globe } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import CopyPublicUrlButton from "@/components/CopyPublicUrlButton";
@@ -73,11 +74,15 @@ export default function GenerationCard({ item }: Props) {
 
         <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-3">
           <Link href={`/edit/${item.id}`}>
-            <Button className="h-11 w-full">編集</Button>
+            <Button className="h-11 w-full">
+              <Pencil className="mr-2 h-4 w-4" />
+              編集
+            </Button>
           </Link>
 
           <Link href={`/lp/${item.id}`}>
             <Button className="h-11 w-full bg-emerald-600 hover:bg-emerald-500">
+              <Globe className="mr-2 h-4 w-4" />
               公開LP
             </Button>
           </Link>

@@ -1,11 +1,18 @@
 "use client";
 
+import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
 export function useCredits() {
+  const { isSignedIn } = useUser();
   const [credits, setCredits] = useState<number | null>(null);
 
   useEffect(() => {
+    if (!isSignedIn) {
+      setCredits(null);
+      return;
+    }
+
     const fetchCredits = async () => {
       try {
         const response = await fetch("/api/user");
@@ -23,7 +30,7 @@ export function useCredits() {
     };
 
     fetchCredits();
-  }, []);
+  }, [isSignedIn]);
 
   return { credits };
 }
