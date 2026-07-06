@@ -1,5 +1,9 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
+import { improveSchema } from "@/lib/validation";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -7,7 +11,41 @@ const client = new OpenAI({
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const rateLimit = checkRateLimit(`improve:${userId}`, 10, 60_000);
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "リクエストが多すぎます。しばらくしてから再度お試しください。" },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+        },
+      );
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        clerkId: userId,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const parsedBody = improveSchema.safeParse(await req.json());
+
+    if (!parsedBody.success) {
+      return NextResponse.json({ error: "入力内容が不正です" }, { status: 400 });
+    }
+
+    const body = parsedBody.data;
 
     const prompt = `
 以下のLPを改善してください。

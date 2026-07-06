@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
@@ -8,9 +8,10 @@ import { Input } from "./ui/input";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Redo2, Undo2 } from "lucide-react";
 import Image from "next/image";
 import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
+import { useHistoryState } from "@/hooks/useHistoryState";
 
 import {
   SortableContext,
@@ -22,6 +23,15 @@ import SortableFeature from "./SortableFeature";
 import SortableTestimonial from "./SortableTestimonial";
 import SortableBenefit from "./SortableBenefit";
 import SortableFaq from "./SortableFaq";
+
+type EditableContent = {
+  hero: string;
+  cta: string;
+  features: string[];
+  benefits: string[];
+  faq: { question: string; answer: string }[];
+  testimonials: { name: string; comment: string }[];
+};
 
 export default function EditForm({
   id,
@@ -49,22 +59,54 @@ export default function EditForm({
   }[];
 }) {
   const [isSaving, setIsSaving] = useState(false);
-  const [hero, setHero] = useState(initialHero);
-  const [cta, setCta] = useState(initialCta);
-  const [features, setFeatures] = useState(initialFeatures);
-  const [benefits, setBenefits] = useState(initialBenefits);
-  const [faq, setFaq] = useState(initialFaq);
   const [aiPrompt, setAiPrompt] = useState("");
   const [isImproving, setIsImproving] = useState(false);
-  const [testimonials, setTestimonials] = useState(
-    initialTestimonials?.length
+
+  const {
+    state: content,
+    set: setContent,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  } = useHistoryState<EditableContent>({
+    hero: initialHero,
+    cta: initialCta,
+    features: initialFeatures,
+    benefits: initialBenefits,
+    faq: initialFaq,
+    testimonials: initialTestimonials?.length
       ? initialTestimonials
       : [
           { name: "", comment: "" },
           { name: "", comment: "" },
           { name: "", comment: "" },
         ],
-  );
+  });
+
+  const { hero, cta, features, benefits, faq, testimonials } = content;
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      const isMod = e.metaKey || e.ctrlKey;
+      if (!isMod) return;
+
+      if (e.key.toLowerCase() === "z" && e.shiftKey) {
+        e.preventDefault();
+        redo();
+      } else if (e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        undo();
+      } else if (e.key.toLowerCase() === "y") {
+        e.preventDefault();
+        redo();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [undo, redo]);
+
   const [image, setImage] = useState<File | null>(null);
   const router = useRouter();
   const publicUrl =
@@ -82,7 +124,13 @@ export default function EditForm({
     const oldIndex = features.findIndex((_, i) => i.toString() === active.id);
     const newIndex = features.findIndex((_, i) => i.toString() === over.id);
 
-    setFeatures(arrayMove(features, oldIndex, newIndex));
+    setContent(
+      (prev) => ({
+        ...prev,
+        features: arrayMove(prev.features, oldIndex, newIndex),
+      }),
+      true,
+    );
   }
 
   function handleDragEndBenefit(event: DragEndEvent) {
@@ -93,7 +141,13 @@ export default function EditForm({
     const oldIndex = benefits.findIndex((_, i) => i.toString() === active.id);
     const newIndex = benefits.findIndex((_, i) => i.toString() === over.id);
 
-    setBenefits(arrayMove(benefits, oldIndex, newIndex));
+    setContent(
+      (prev) => ({
+        ...prev,
+        benefits: arrayMove(prev.benefits, oldIndex, newIndex),
+      }),
+      true,
+    );
   }
 
   function handleDragEndFaq(event: DragEndEvent) {
@@ -104,7 +158,10 @@ export default function EditForm({
     const oldIndex = faq.findIndex((_, i) => i.toString() === active.id);
     const newIndex = faq.findIndex((_, i) => i.toString() === over.id);
 
-    setFaq(arrayMove(faq, oldIndex, newIndex));
+    setContent(
+      (prev) => ({ ...prev, faq: arrayMove(prev.faq, oldIndex, newIndex) }),
+      true,
+    );
   }
 
   function handleDragEndTestimonial(event: DragEndEvent) {
@@ -118,7 +175,13 @@ export default function EditForm({
 
     const newIndex = testimonials.findIndex((_, i) => i.toString() === over.id);
 
-    setTestimonials(arrayMove(testimonials, oldIndex, newIndex));
+    setContent(
+      (prev) => ({
+        ...prev,
+        testimonials: arrayMove(prev.testimonials, oldIndex, newIndex),
+      }),
+      true,
+    );
   }
 
   async function handleSave() {
@@ -213,12 +276,17 @@ export default function EditForm({
         return;
       }
 
-      setHero(data.hero);
-      setCta(data.cta);
-      setFeatures(data.features);
-      setBenefits(data.benefits);
-      setFaq(data.faq);
-      setTestimonials(data.testimonials);
+      setContent(
+        {
+          hero: data.hero,
+          cta: data.cta,
+          features: data.features,
+          benefits: data.benefits,
+          faq: data.faq,
+          testimonials: data.testimonials,
+        },
+        true,
+      );
 
       toast.success("AIが改善しました！");
     } catch (error) {
@@ -235,8 +303,10 @@ export default function EditForm({
         <Label className="mb-2 block font-bold">Hero</Label>
         <Input
           value={hero}
-          onChange={(e) => setHero(e.target.value)}
-          className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+          onChange={(e) =>
+            setContent((prev) => ({ ...prev, hero: e.target.value }))
+          }
+          className="w-full rounded-lg border border-slate-700 bg-muted p-3"
         />
       </div>
 
@@ -244,9 +314,11 @@ export default function EditForm({
         <Label className="mb-2 block font-bold">CTA</Label>
         <Textarea
           value={cta}
-          onChange={(e) => setCta(e.target.value)}
+          onChange={(e) =>
+            setContent((prev) => ({ ...prev, cta: e.target.value }))
+          }
           rows={4}
-          className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+          className="w-full rounded-lg border border-slate-700 bg-muted p-3"
         />
       </div>
 
@@ -307,12 +379,20 @@ export default function EditForm({
                 id={index.toString()}
                 value={feature}
                 onChange={(value) => {
-                  const newFeatures = [...features];
-                  newFeatures[index] = value;
-                  setFeatures(newFeatures);
+                  setContent((prev) => {
+                    const newFeatures = [...prev.features];
+                    newFeatures[index] = value;
+                    return { ...prev, features: newFeatures };
+                  });
                 }}
                 onDelete={() => {
-                  setFeatures(features.filter((_, i) => i !== index));
+                  setContent(
+                    (prev) => ({
+                      ...prev,
+                      features: prev.features.filter((_, i) => i !== index),
+                    }),
+                    true,
+                  );
                 }}
               />
             ))}
@@ -323,7 +403,10 @@ export default function EditForm({
           type="button"
           variant="outline"
           onClick={() => {
-            setFeatures([...features, ""]);
+            setContent(
+              (prev) => ({ ...prev, features: [...prev.features, ""] }),
+              true,
+            );
           }}
         >
           + Featureを追加
@@ -347,12 +430,20 @@ export default function EditForm({
                 id={index.toString()}
                 value={benefit}
                 onChange={(value) => {
-                  const newBenefits = [...benefits];
-                  newBenefits[index] = value;
-                  setBenefits(newBenefits);
+                  setContent((prev) => {
+                    const newBenefits = [...prev.benefits];
+                    newBenefits[index] = value;
+                    return { ...prev, benefits: newBenefits };
+                  });
                 }}
                 onDelete={() => {
-                  setBenefits(benefits.filter((_, i) => i !== index));
+                  setContent(
+                    (prev) => ({
+                      ...prev,
+                      benefits: prev.benefits.filter((_, i) => i !== index),
+                    }),
+                    true,
+                  );
                 }}
               />
             ))}
@@ -364,7 +455,10 @@ export default function EditForm({
           variant="outline"
           className="mt-2"
           onClick={() => {
-            setBenefits([...benefits, ""]);
+            setContent(
+              (prev) => ({ ...prev, benefits: [...prev.benefits, ""] }),
+              true,
+            );
           }}
         >
           + Benefitを追加
@@ -388,12 +482,20 @@ export default function EditForm({
                 id={index.toString()}
                 value={item}
                 onChange={(value) => {
-                  const newFaq = [...faq];
-                  newFaq[index] = value;
-                  setFaq(newFaq);
+                  setContent((prev) => {
+                    const newFaq = [...prev.faq];
+                    newFaq[index] = value;
+                    return { ...prev, faq: newFaq };
+                  });
                 }}
                 onDelete={() => {
-                  setFaq(faq.filter((_, i) => i !== index));
+                  setContent(
+                    (prev) => ({
+                      ...prev,
+                      faq: prev.faq.filter((_, i) => i !== index),
+                    }),
+                    true,
+                  );
                 }}
               />
             ))}
@@ -404,13 +506,13 @@ export default function EditForm({
           type="button"
           variant="outline"
           onClick={() => {
-            setFaq([
-              ...faq,
-              {
-                question: "",
-                answer: "",
-              },
-            ]);
+            setContent(
+              (prev) => ({
+                ...prev,
+                faq: [...prev.faq, { question: "", answer: "" }],
+              }),
+              true,
+            );
           }}
         >
           + FAQを追加
@@ -432,12 +534,22 @@ export default function EditForm({
                 id={index.toString()}
                 review={review}
                 onChange={(value) => {
-                  const newReviews = [...testimonials];
-                  newReviews[index] = value;
-                  setTestimonials(newReviews);
+                  setContent((prev) => {
+                    const newReviews = [...prev.testimonials];
+                    newReviews[index] = value;
+                    return { ...prev, testimonials: newReviews };
+                  });
                 }}
                 onDelete={() => {
-                  setTestimonials(testimonials.filter((_, i) => i !== index));
+                  setContent(
+                    (prev) => ({
+                      ...prev,
+                      testimonials: prev.testimonials.filter(
+                        (_, i) => i !== index,
+                      ),
+                    }),
+                    true,
+                  );
                 }}
               />
             ))}
@@ -447,13 +559,16 @@ export default function EditForm({
           type="button"
           variant="outline"
           onClick={() => {
-            setTestimonials([
-              ...testimonials,
-              {
-                name: "",
-                comment: "",
-              },
-            ]);
+            setContent(
+              (prev) => ({
+                ...prev,
+                testimonials: [
+                  ...prev.testimonials,
+                  { name: "", comment: "" },
+                ],
+              }),
+              true,
+            );
           }}
         >
           + お客様の声を追加
@@ -476,10 +591,41 @@ export default function EditForm({
         </Button>
       </div>
 
-      <Button type="button" onClick={handleSave} disabled={isSaving}>
-        {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        {isSaving ? "保存中..." : "保存する"}
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          onClick={undo}
+          disabled={!canUndo}
+          title="元に戻す (Ctrl+Z)"
+          aria-label="元に戻す"
+        >
+          <Undo2 className="h-4 w-4" />
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          onClick={redo}
+          disabled={!canRedo}
+          title="やり直す (Ctrl+Shift+Z)"
+          aria-label="やり直す"
+        >
+          <Redo2 className="h-4 w-4" />
+        </Button>
+
+        <Button
+          type="button"
+          onClick={handleSave}
+          disabled={isSaving}
+          className="ml-auto"
+        >
+          {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isSaving ? "保存中..." : "保存する"}
+        </Button>
+      </div>
     </div>
   );
 }

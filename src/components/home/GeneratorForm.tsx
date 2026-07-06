@@ -83,7 +83,7 @@ export default function GeneratorForm({
               placeholder="業種（例：パーソナルジム）"
               value={business}
               onChange={(e) => setBusiness(e.target.value)}
-              className="h-14 rounded-2xl border-cyan-500/20 bg-zinc-900/40 pl-12 text-white backdrop-blur-xl transition-all duration-300 hover:border-cyan-400/40 hover:shadow-[0_0_15px_rgba(34,211,238,.15)] focus-visible:border-cyan-400 focus-visible:shadow-[0_0_25px_rgba(34,211,238,.35)] focus-visible:ring-2 focus-visible:ring-cyan-400/30"
+              className="h-14 rounded-2xl border-cyan-500/20 bg-zinc-900/40 pl-12 text-foreground backdrop-blur-xl transition-all duration-300 hover:border-cyan-400/40 hover:shadow-[0_0_15px_rgba(34,211,238,.15)] focus-visible:border-cyan-400 focus-visible:shadow-[0_0_25px_rgba(34,211,238,.35)] focus-visible:ring-2 focus-visible:ring-cyan-400/30"
             />
           </div>
           <div className="relative">
@@ -96,7 +96,7 @@ export default function GeneratorForm({
               placeholder="ターゲット（例：20代女性）"
               value={target}
               onChange={(e) => setTarget(e.target.value)}
-              className="h-14 rounded-2xl border-cyan-500/20 bg-zinc-900/40 pl-12 text-white backdrop-blur-xl transition-all duration-300 hover:border-cyan-400/40 hover:shadow-[0_0_15px_rgba(34,211,238,.15)] focus-visible:border-cyan-400 focus-visible:shadow-[0_0_25px_rgba(34,211,238,.35)] focus-visible:ring-2 focus-visible:ring-cyan-400/30"
+              className="h-14 rounded-2xl border-cyan-500/20 bg-zinc-900/40 pl-12 text-foreground backdrop-blur-xl transition-all duration-300 hover:border-cyan-400/40 hover:shadow-[0_0_15px_rgba(34,211,238,.15)] focus-visible:border-cyan-400 focus-visible:shadow-[0_0_25px_rgba(34,211,238,.35)] focus-visible:ring-2 focus-visible:ring-cyan-400/30"
             />
           </div>
           <div className="relative">
@@ -113,7 +113,7 @@ export default function GeneratorForm({
                 aria-label="テンプレート"
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
-                className="h-14 w-full rounded-2xl border border-cyan-500/20 bg-zinc-900/40 px-4 text-white"
+                className="h-14 w-full rounded-2xl border border-cyan-500/20 bg-zinc-900/40 px-4 text-foreground"
               >
                 <option value="modern">Modern</option>
                 <option value="luxury">Luxury</option>
@@ -126,7 +126,7 @@ export default function GeneratorForm({
               placeholder="雰囲気（例：高級感）"
               value={atmosphere}
               onChange={(e) => setAtmosphere(e.target.value)}
-              className="h-14 rounded-2xl border-cyan-500/20 bg-zinc-900/40 pl-12 text-white backdrop-blur-xl transition-all duration-300 hover:border-cyan-400/40 hover:shadow-[0_0_15px_rgba(34,211,238,.15)] focus-visible:border-cyan-400 focus-visible:shadow-[0_0_25px_rgba(34,211,238,.35)] focus-visible:ring-2 focus-visible:ring-cyan-400/30"
+              className="h-14 rounded-2xl border-cyan-500/20 bg-zinc-900/40 pl-12 text-foreground backdrop-blur-xl transition-all duration-300 hover:border-cyan-400/40 hover:shadow-[0_0_15px_rgba(34,211,238,.15)] focus-visible:border-cyan-400 focus-visible:shadow-[0_0_25px_rgba(34,211,238,.35)] focus-visible:ring-2 focus-visible:ring-cyan-400/30"
             />
           </div>
           <Button
@@ -140,7 +140,7 @@ export default function GeneratorForm({
               !atmosphere ||
               credits === 0
             }
-            className={`group relative h-14 w-full overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-500 font-semibold text-white transition-all duration-300 before:absolute before:inset-0 before:bg-cyan-400/10 before:opacity-0 before:transition-opacity before:duration-500 hover:scale-[1.02] hover:shadow-[0_0_70px_rgba(34,211,238,.55)] hover:brightness-110 hover:before:opacity-100 active:scale-[0.98] ${loading ? "animate-pulse shadow-[0_0_50px_rgba(34,211,238,.45)]" : ""} `}
+            className={`group relative h-14 w-full overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-500 font-semibold text-foreground transition-all duration-300 before:absolute before:inset-0 before:bg-cyan-400/10 before:opacity-0 before:transition-opacity before:duration-500 hover:scale-[1.02] hover:shadow-[0_0_70px_rgba(34,211,238,.55)] hover:brightness-110 hover:before:opacity-100 active:scale-[0.98] ${loading ? "animate-pulse shadow-[0_0_50px_rgba(34,211,238,.45)]" : ""} `}
           >
             {/* 光が流れる */}
             <div className="absolute inset-0 overflow-hidden rounded-2xl">
@@ -156,7 +156,7 @@ export default function GeneratorForm({
                 ) : (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin text-cyan-300" />
-                    <span className="text-white">{status[activeStep]}</span>
+                    <span className="text-foreground">{status[activeStep]}</span>
                   </>
                 )}
               </span>

@@ -30,6 +30,7 @@ export default function HeroCard({ mouseParallax }: Props) {
 
                 <div className="flex gap-6 text-sm text-zinc-300">
                   <Link href="/">Home</Link>
+                  <Link href="/dashboard">Dashboard</Link>
                   <Link href="/history">History</Link>
                   <Link href="/pricing">Pricing</Link>
                 </div>
@@ -71,7 +72,7 @@ export default function HeroCard({ mouseParallax }: Props) {
                 AI Powered
               </p>
 
-              <h3 className="text-4xl font-bold text-white">
+              <h3 className="text-4xl font-bold text-foreground">
                 Landing Page Builder
               </h3>
 

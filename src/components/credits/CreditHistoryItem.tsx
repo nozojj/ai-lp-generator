@@ -14,7 +14,7 @@ export default function CreditHistoryItem({
   item,
 }: Props) {
   return (
-    <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:bg-slate-800 hover:shadow-xl">
+    <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:bg-muted hover:shadow-xl">
       <div className="flex items-center gap-3">
         {item.amount === 0 ? (
           <Crown className="h-6 w-6 text-yellow-400" />

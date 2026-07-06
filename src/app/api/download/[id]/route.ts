@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { escapeHtml } from "@/lib/utils";
+import { renderCardList, renderTestimonials, renderFaq } from "@/lib/lp-html";
 
 export async function GET(
   request: Request,
@@ -19,57 +21,12 @@ export async function GET(
     });
   }
 
-  const benefits = (item.benefits as string[])
-    .map(
-      (benefit) => `
-      <div class="card">
-        <h3>${benefit}</h3>
-      </div>
-    `,
-    )
-    .join("");
-
-  const features = (item.features as string[])
-    .map(
-      (feature) => `
-      <div class="card">
-        <h3>${feature}</h3>
-      </div>
-    `,
-    )
-    .join("");
-
-  const testimonials = (
-    item.testimonials as {
-      name: string;
-      comment: string;
-    }[]
-  )
-    .map(
-      (review) => `
-      <div class="card">
-        <h3>${review.name}</h3>
-        <p>${review.comment}</p>
-      </div>
-    `,
-    )
-    .join("");
-
-  const faq = (
-    item.faq as {
-      question: string;
-      answer: string;
-    }[]
-  )
-    .map(
-      (item) => `
-      <div class="card">
-        <h3>${item.question}</h3>
-        <p>${item.answer}</p>
-      </div>
-    `,
-    )
-    .join("");
+  const benefits = renderCardList(item.benefits as string[]);
+  const features = renderCardList(item.features as string[]);
+  const testimonials = renderTestimonials(
+    item.testimonials as { name: string; comment: string }[],
+  );
+  const faq = renderFaq(item.faq as { question: string; answer: string }[]);
 
   const html = `
 <!DOCTYPE html>
@@ -77,7 +34,7 @@ export async function GET(
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>${item.hero}</title>
+<title>${escapeHtml(item.hero)}</title>
 <style>
 body{
   margin:0;
@@ -91,7 +48,7 @@ body{
   text-align:center;
   background:
     linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
-    url('${item.imageUrl}') center/cover;
+    url('${(item.imageUrl ?? "").replace(/'/g, "%27")}') center/cover;
 }
 .hero h1{
   font-size:48px;
@@ -130,12 +87,12 @@ body{
 <body>
 
 <section class="hero">
-  <h1>${item.hero}</h1>
-  <p>${item.cta}</p>
+  <h1>${escapeHtml(item.hero)}</h1>
+  <p>${escapeHtml(item.cta)}</p>
 
   <a
     class="button"
-    href="${item.ctaUrl ?? "#"}"
+    href="${escapeHtml(item.ctaUrl ?? "#")}"
   >
     無料体験はこちら
   </a>

@@ -21,8 +21,7 @@ export const metadata: Metadata = {
     default: "AI LP Generator",
     template: "%s",
   },
-  description:
-    "AIが高品質なランディングページを自動生成するAI SaaS。",
+  description: "AIが高品質なランディングページを自動生成するAI SaaS。",
 };
 
 export default function RootLayout({
@@ -36,7 +35,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}
 
             <Toaster />

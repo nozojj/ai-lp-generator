@@ -42,7 +42,7 @@ export default function Template({ item }: Props) {
       ? "rounded-2xl border border-gray-300 bg-white"
       : isCorporate
         ? "rounded-2xl border border-slate-300 bg-white"
-        : "rounded-2xl border border-slate-700 bg-slate-800";
+        : "rounded-2xl border border-slate-700 bg-muted";
 
   const ctaClass = isLuxury
     ? "rounded-3xl bg-gradient-to-r from-yellow-500 to-amber-700 p-12"

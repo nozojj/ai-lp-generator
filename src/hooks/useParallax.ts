@@ -1,13 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function useParallax() {
-  const [mouseLight, setMouseLight] = useState({
-    x: 0,
-    y: 0,
-  });
-
   const [targetParallax, setTargetParallax] = useState({
     x: 0,
     y: 0,
@@ -18,26 +13,30 @@ export function useParallax() {
     y: 0,
   });
 
+  const targetParallaxRef = useRef(targetParallax);
+
+  useEffect(() => {
+    targetParallaxRef.current = targetParallax;
+  }, [targetParallax]);
+
   useEffect(() => {
     let animationFrame: number;
 
     const animate = () => {
       setMouseParallax((prev) => ({
-        x: prev.x + (targetParallax.x - prev.x) * 0.08,
-        y: prev.y + (targetParallax.y - prev.y) * 0.08,
+        x: prev.x + (targetParallaxRef.current.x - prev.x) * 0.08,
+        y: prev.y + (targetParallaxRef.current.y - prev.y) * 0.08,
       }));
 
       animationFrame = requestAnimationFrame(animate);
     };
 
-    animate();
+    animationFrame = requestAnimationFrame(animate);
 
     return () => cancelAnimationFrame(animationFrame);
-  }, [targetParallax]);
+  }, []);
 
   return {
-    mouseLight,
-    setMouseLight,
     mouseParallax,
     targetParallax,
     setTargetParallax,

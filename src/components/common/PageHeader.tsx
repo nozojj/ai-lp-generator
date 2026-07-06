@@ -11,13 +11,15 @@ export default function PageHeader({
 }: PageHeaderProps) {
   return (
     <div className="mb-8">
-      <p className="mb-2 text-sm tracking-widest text-slate-400 uppercase">
+      <p className="text-muted-foreground mb-2 text-sm tracking-widest uppercase">
         {label}
       </p>
 
-      <h1 className="text-4xl font-bold">{title}</h1>
+      <h1 className="text-foreground text-4xl font-bold">{title}</h1>
 
-      {description && <p className="mt-2 text-slate-400">{description}</p>}
+      {description && (
+        <p className="text-muted-foreground mt-2">{description}</p>
+      )}
     </div>
   );
 }

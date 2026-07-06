@@ -39,29 +39,27 @@ export default async function CreditsPage() {
   });
 
   return (
-    <main className="min-h-screen bg-slate-950 p-10 text-white">
-      <div className="mx-auto max-w-6xl">
-        <PageHeader
-          label="Credits"
-          title="クレジット履歴"
-          description="クレジットの利用履歴を確認できます。"
+    <main className="min-h-screen p-10 text-foreground">
+      <PageHeader
+        label="Credits"
+        title="クレジット履歴"
+        description="クレジットの利用履歴を確認できます。"
+      />
+
+      <CreditBalanceCard credits={user.credits} />
+
+      {history.length === 0 ? (
+        <EmptyState
+          title="まだ履歴がありません"
+          description="LPを生成するとここに履歴が表示されます。"
         />
-
-        <CreditBalanceCard credits={user.credits} />
-
-        {history.length === 0 ? (
-          <EmptyState
-            title="まだ履歴がありません"
-            description="LPを生成するとここに履歴が表示されます。"
-          />
-        ) : (
-          <div className="space-y-4">
-            {history.map((item) => (
-              <CreditHistoryItem key={item.id} item={item} />
-            ))}
-          </div>
-        )}
-      </div>
+      ) : (
+        <div className="space-y-4">
+          {history.map((item) => (
+            <CreditHistoryItem key={item.id} item={item} />
+          ))}
+        </div>
+      )}
     </main>
   );
 }

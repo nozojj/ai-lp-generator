@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import GenerationCard from "./GenerationCard";
 import type { Generation } from "@prisma/client";
 import { Input } from "../ui/input";
-import { Search, X } from "lucide-react";
+import { ArrowUpDown, Filter, Search, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -17,9 +17,12 @@ type Props = {
   generations: Generation[];
 };
 
+const TEMPLATE_OPTIONS = ["modern", "luxury", "minimal", "corporate"];
+
 export default function DashboardContent({ generations }: Props) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
+  const [templateFilter, setTemplateFilter] = useState("all");
 
   const keyword = search.toLowerCase();
   const filtered = useMemo(() => {
@@ -32,6 +35,9 @@ export default function DashboardContent({ generations }: Props) {
           item.atmosphere.toLowerCase().includes(keyword) ||
           item.template.toLowerCase().includes(keyword)
         );
+      })
+      .filter((item) => {
+        return templateFilter === "all" || item.template === templateFilter;
       })
       .sort((a, b) => {
         switch (sort) {
@@ -48,63 +54,83 @@ export default function DashboardContent({ generations }: Props) {
             return b.createdAt.getTime() - a.createdAt.getTime();
         }
       });
-  }, [generations, keyword, sort]);
+  }, [generations, keyword, templateFilter, sort]);
   return (
     <>
-      <div className="relative mb-6">
-        <Search
-          size={18}
-          className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400"
-        />
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="LPを検索..."
-          className="pl-10"
-        />
-        {search && (
-          <button
-            type="button"
-            onClick={() => setSearch("")}
-            aria-label="検索をクリア"
-            title="検索をクリア"
-            className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 transition-colors hover:text-white"
-          >
-            <X size={18} aria-hidden="true" />
-          </button>
-        )}
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search
+            size={18}
+            className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2"
+          />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="LPを検索..."
+            className="pl-10"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              aria-label="検索をクリア"
+              title="検索をクリア"
+              className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Select value={templateFilter} onValueChange={setTemplateFilter}>
+            <SelectTrigger className="w-36">
+              <Filter className="mr-1 h-4 w-4" />
+              <SelectValue placeholder="フィルター" />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="all">すべてのテンプレート</SelectItem>
+
+              {TEMPLATE_OPTIONS.map((template) => (
+                <SelectItem key={template} value={template} className="capitalize">
+                  {template}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={sort} onValueChange={setSort}>
+            <SelectTrigger className="w-40">
+              <ArrowUpDown className="mr-1 h-4 w-4" />
+              <SelectValue />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="newest">新しい順</SelectItem>
+
+              <SelectItem value="oldest">古い順</SelectItem>
+
+              <SelectItem value="business">業種順</SelectItem>
+
+              <SelectItem value="template">テンプレート順</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      <div className="mb-6 flex items-center justify-between">
-        <p className="mb-4 text-sm text-slate-400">
-          検索結果：{filtered.length}件
-        </p>
-
-        <Select value={sort} onValueChange={setSort}>
-          <SelectTrigger className="w-40">
-            <SelectValue />
-          </SelectTrigger>
-
-          <SelectContent>
-            <SelectItem value="newest">新しい順</SelectItem>
-
-            <SelectItem value="oldest">古い順</SelectItem>
-
-            <SelectItem value="business">業種順</SelectItem>
-
-            <SelectItem value="template">テンプレート順</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <p className="text-muted-foreground mb-6 text-sm">
+        検索結果：{filtered.length}件
+      </p>
 
       <div className="space-y-6">
         {filtered.length === 0 ? (
-          <div className="rounded-xl border border-slate-700 bg-slate-900 p-10 text-center">
-            <Search className="mx-auto mb-4 h-12 w-12 text-slate-500" />
+          <div className="border-border bg-card rounded-xl border p-10 text-center">
+            <Search className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
 
             <h3 className="text-lg font-semibold">LPが見つかりません</h3>
 
-            <p className="mt-2 text-slate-400">
+            <p className="text-muted-foreground mt-2">
               検索キーワードを変更してください。
             </p>
           </div>

@@ -14,6 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Trash2 } from "lucide-react";
 
 export default function DeleteButton({ id }: { id: string }) {
   const router = useRouter();
@@ -22,10 +23,6 @@ export default function DeleteButton({ id }: { id: string }) {
     const ok = confirm("本当に削除しますか？");
 
     if (!ok) return;
-
-    const res = await fetch(`/api/generation/${id}`, {
-      method: "DELETE",
-    });
 
     try {
       const res = await fetch(`/api/generation/${id}`, {
@@ -47,7 +44,8 @@ export default function DeleteButton({ id }: { id: string }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" className="w-full">
+        <Button variant="destructive" className="h-11 w-full font-medium">
+          <Trash2 className="mr-2 h-4 w-4" />
           削除
         </Button>
       </AlertDialogTrigger>

@@ -3,17 +3,12 @@ type EmptyStateProps = {
   description: string;
 };
 
-export default function EmptyState({
-  title,
-  description,
-}: EmptyStateProps) {
+export default function EmptyState({ title, description }: EmptyStateProps) {
   return (
-    <div className="rounded-xl bg-slate-900 p-10 text-center">
-      <h2 className="text-2xl font-bold">{title}</h2>
+    <div className="border-border bg-card rounded-xl border p-10 text-center shadow-sm">
+      <h2 className="text-foreground text-2xl font-bold">{title}</h2>
 
-      <p className="mt-2 text-slate-400">
-        {description}
-      </p>
+      <p className="text-muted-foreground mt-2">{description}</p>
     </div>
   );
 }

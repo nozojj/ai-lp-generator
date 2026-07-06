@@ -70,13 +70,13 @@ export default function FeatureCard({
       }}
     >
       <Card className="group relative h-full overflow-hidden rounded-3xl border border-cyan-500/20 bg-zinc-900/40 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,.35)]">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
         <CardContent className="relative p-6 text-center">
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-500/10 text-cyan-300 transition-all duration-500 group-hover:-translate-y-1 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-[0_0_30px_rgba(34,211,238,.6)]">
             {icon}
           </div>
 
-          <h3 className="text-xl font-bold text-white transition-colors duration-300 group-hover:text-cyan-300">
+          <h3 className="text-foreground text-xl font-bold transition-colors duration-300 group-hover:text-cyan-300">
             {title}
           </h3>
 
