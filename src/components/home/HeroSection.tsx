@@ -80,6 +80,7 @@ export default function HeroSection() {
         </div>
 
         <p className="text-muted-foreground mx-auto mt-4 max-w-2xl">
+
           業種・ターゲット・雰囲気を入力するだけで、
           LP構成とヒーロー画像を数秒で生成します。
         </p>
