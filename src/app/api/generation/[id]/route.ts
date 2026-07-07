@@ -2,6 +2,65 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        clerkId: userId,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const { id } = await params;
+    const body = await request.json();
+
+    if (typeof body.isFavorite !== "boolean") {
+      return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+    }
+
+    const generation = await prisma.generation.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!generation) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
+    if (generation.userId !== user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const updated = await prisma.generation.update({
+      where: {
+        id,
+      },
+      data: {
+        isFavorite: body.isFavorite,
+      },
+    });
+
+    return NextResponse.json({ isFavorite: updated.isFavorite });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json({ error: "Failed" }, { status: 500 });
+  }
+}
+
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> },

@@ -9,6 +9,8 @@ import CopyPublicUrlButton from "@/components/CopyPublicUrlButton";
 import DeleteButton from "@/components/DeleteButton";
 import DownloadHtmlButton from "@/components/DownloadHtmlButton";
 import DownloadZipButton from "@/components/DownloadZipButton";
+import DownloadImageButton from "@/components/DownloadImageButton";
+import FavoriteButton from "@/components/FavoriteButton";
 
 import type { Generation } from "@prisma/client";
 
@@ -32,6 +34,8 @@ export default function GenerationCard({ item }: Props) {
               className="object-cover transition-transform duration-500 group-hover:scale-105"
               unoptimized
             />
+
+            <FavoriteButton id={item.id} isFavorite={item.isFavorite} />
 
             <div className="from-background absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t to-transparent" />
           </div>
@@ -107,6 +111,15 @@ export default function GenerationCard({ item }: Props) {
           <div className="flex-1">
             <DownloadZipButton id={item.id} />
           </div>
+
+          {item.imageUrl && (
+            <div className="flex-1">
+              <DownloadImageButton
+                imageUrl={item.imageUrl}
+                fileName={`${item.hero}.png`}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
