@@ -27,6 +27,8 @@ export default async function EditPage({
         id={item.id}
         hero={item.hero}
         cta={item.cta}
+        ctaUrl={item.ctaUrl}
+        template={item.template}
         imageUrl={item.imageUrl}
         features={item.features as string[]}
         benefits={item.benefits as string[]}

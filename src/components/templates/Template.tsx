@@ -1,4 +1,3 @@
-import { Generation } from "@prisma/client";
 import { Button } from "../ui/button";
 import {
   Accordion,
@@ -15,8 +14,20 @@ import {
   HeartHandshake,
 } from "lucide-react";
 
+export type TemplateData = {
+  hero: string;
+  cta: string;
+  ctaUrl?: string | null;
+  features: unknown;
+  benefits: unknown;
+  faq?: unknown;
+  testimonials?: unknown;
+  imageUrl?: string | null;
+  template: string;
+};
+
 type Props = {
-  item: Generation;
+  item: TemplateData;
 };
 
 export default function Template({ item }: Props) {

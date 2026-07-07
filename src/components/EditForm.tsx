@@ -23,6 +23,8 @@ import SortableFeature from "./SortableFeature";
 import SortableTestimonial from "./SortableTestimonial";
 import SortableBenefit from "./SortableBenefit";
 import SortableFaq from "./SortableFaq";
+import Template, { type TemplateData } from "./templates/Template";
+import { cn } from "@/lib/utils";
 
 type EditableContent = {
   hero: string;
@@ -37,6 +39,8 @@ export default function EditForm({
   id,
   hero: initialHero,
   cta: initialCta,
+  ctaUrl,
+  template,
   imageUrl: initialImageUrl,
   features: initialFeatures,
   benefits: initialBenefits,
@@ -46,6 +50,8 @@ export default function EditForm({
   id: string;
   hero: string;
   cta: string;
+  ctaUrl: string | null;
+  template: string;
   imageUrl: string | null;
   features: string[];
   benefits: string[];
@@ -61,6 +67,7 @@ export default function EditForm({
   const [isSaving, setIsSaving] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
   const [isImproving, setIsImproving] = useState(false);
+  const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
 
   const {
     state: content,
@@ -115,6 +122,21 @@ export default function EditForm({
     if (!image) return initialImageUrl;
     return URL.createObjectURL(image);
   }, [image, initialImageUrl]);
+
+  const previewItem: TemplateData = useMemo(
+    () => ({
+      hero,
+      cta,
+      ctaUrl,
+      template,
+      features,
+      benefits,
+      faq,
+      testimonials,
+      imageUrl: preview,
+    }),
+    [hero, cta, ctaUrl, template, features, benefits, faq, testimonials, preview],
+  );
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -298,9 +320,43 @@ export default function EditForm({
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <Label className="mb-2 block font-bold">Hero</Label>
+    <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+      <div className="flex gap-1 rounded-lg border border-slate-700 p-1 lg:hidden">
+        <button
+          type="button"
+          onClick={() => setMobileView("edit")}
+          className={cn(
+            "flex-1 rounded-md py-1.5 text-sm font-medium transition-colors",
+            mobileView === "edit"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground",
+          )}
+        >
+          編集
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setMobileView("preview")}
+          className={cn(
+            "flex-1 rounded-md py-1.5 text-sm font-medium transition-colors",
+            mobileView === "preview"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground",
+          )}
+        >
+          プレビュー
+        </button>
+      </div>
+
+      <div
+        className={cn(
+          "space-y-6",
+          mobileView === "preview" && "hidden lg:block",
+        )}
+      >
+        <div>
+          <Label className="mb-2 block font-bold">Hero</Label>
         <Input
           value={hero}
           onChange={(e) =>
@@ -625,6 +681,28 @@ export default function EditForm({
           {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isSaving ? "保存中..." : "保存する"}
         </Button>
+      </div>
+      </div>
+
+      <div className={cn(mobileView === "edit" && "hidden lg:block")}>
+        <div className="lg:sticky lg:top-6">
+          <p className="mb-2 flex items-center gap-2 text-sm font-medium text-cyan-500">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-cyan-400" />
+            ライブプレビュー
+          </p>
+
+          <div className="overflow-hidden rounded-2xl border border-slate-700">
+            <div className="flex items-center gap-2 border-b border-slate-700 bg-zinc-900 px-4 py-3">
+              <div className="h-3 w-3 rounded-full bg-red-500" />
+              <div className="h-3 w-3 rounded-full bg-yellow-400" />
+              <div className="h-3 w-3 rounded-full bg-green-500" />
+            </div>
+
+            <div className="max-h-[80vh] overflow-y-auto">
+              <Template item={previewItem} />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
