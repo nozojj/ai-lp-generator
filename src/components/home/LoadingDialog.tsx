@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { animate, AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Circle, Hourglass } from "lucide-react";
+import LoadingSpaceScene from "./LoadingSpaceScene";
 
 type LoadingDialogProps = {
   loading: boolean;
@@ -126,6 +127,8 @@ export default function LoadingDialog({
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md"
         >
+          <LoadingSpaceScene />
+
           <LoadingDialogContent activeStep={activeStep} demoMode={demoMode} />
         </motion.div>
       )}
