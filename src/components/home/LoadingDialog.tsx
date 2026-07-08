@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { animate, AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Circle, Hourglass } from "lucide-react";
 import LoadingSpaceScene from "./LoadingSpaceScene";
+import AiThinkingCore from "./AiThinkingCore";
 
 type LoadingDialogProps = {
   loading: boolean;
@@ -51,6 +52,8 @@ function LoadingDialogContent({
       transition={{ duration: 0.3, ease: "easeOut" }}
       className="w-full max-w-lg rounded-3xl border border-cyan-500/20 bg-zinc-950/90 p-8 shadow-[0_0_60px_rgba(34,211,238,.2)]"
     >
+      <AiThinkingCore />
+
       <h2 className="mb-8 text-center text-2xl font-bold text-white">
         {demoMode ? "🚀 Demo Generation" : "LPを生成しています..."}
       </h2>
