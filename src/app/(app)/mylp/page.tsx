@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
+import { Sparkles } from "lucide-react";
 import EmptyState from "@/components/common/EmptyState";
 import PageHeader from "@/components/common/PageHeader";
 import DashboardContent from "@/components/dashboard/DashboardContent";
@@ -65,8 +66,11 @@ export default async function MyLpPage({
 
       {generations.length === 0 ? (
         <EmptyState
+          icon={Sparkles}
           title="まだLPがありません"
-          description="最初のLPを生成してみましょう。"
+          description="業種・ターゲット・雰囲気を入力するだけで、AIがLP構成とヒーロー画像を数秒で生成します。"
+          actionLabel="LPを生成する"
+          actionHref="/"
         />
       ) : (
         <div className="space-y-6">
