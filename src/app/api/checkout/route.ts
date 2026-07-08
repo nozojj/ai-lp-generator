@@ -25,6 +25,12 @@ export async function POST() {
     metadata: {
       clerkId: userId,
     },
+
+    payment_intent_data: {
+      metadata: {
+        clerkId: userId,
+      },
+    },
     line_items: [
       {
         price_data: {

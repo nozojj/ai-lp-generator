@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     const clerkId = session.metadata?.clerkId;
 
     if (clerkId) {
-      await prisma.user.update({
+      const user = await prisma.user.update({
         where: {
           clerkId,
         },
@@ -52,6 +52,55 @@ export async function POST(req: Request) {
           isPro: true,
         },
       });
+
+      await prisma.creditHistory.create({
+        data: {
+          userId: user.id,
+          amount: 100,
+          reason: "Pro加入",
+        },
+      });
+    }
+  }
+
+  if (event.type === "charge.refunded") {
+    try {
+      await prisma.webhookEvent.create({
+        data: { stripeEventId: event.id },
+      });
+    } catch {
+      return NextResponse.json({ received: true });
+    }
+
+    const charge = event.data.object;
+    const clerkId = charge.metadata?.clerkId;
+
+    if (clerkId) {
+      const existing = await prisma.user.findUnique({
+        where: {
+          clerkId,
+        },
+      });
+
+      if (existing) {
+        const user = await prisma.user.update({
+          where: {
+            clerkId,
+          },
+          data: {
+            credits: Math.max(0, existing.credits - 100),
+            isPro: false,
+          },
+        });
+
+        await prisma.creditHistory.create({
+          data: {
+            userId: user.id,
+            amount: -100,
+            reason: "返金",
+          },
+        });
+      }
     }
   }
 
