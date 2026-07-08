@@ -46,7 +46,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <h1
-              className="mb-4 bg-gradient-to-r from-cyan-200 to-blue-500 bg-clip-text text-6xl font-bold text-transparent"
+              className="mb-4 bg-gradient-to-r from-cyan-200 to-blue-500 bg-clip-text text-4xl font-bold text-transparent sm:text-5xl md:text-6xl"
               style={{
                 transform: `translate(${mouseParallax.x * 2}px, ${mouseParallax.y * 2}px)`,
               }}
@@ -70,13 +70,13 @@ export default function HeroSection() {
             </Button>
           </motion.div>
 
-          <div className="mt-8 flex justify-center gap-10 text-center">
+          <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-4 text-center sm:gap-x-10">
             <div
               style={{
                 transform: `translate(${mouseParallax.x}px, ${mouseParallax.y}px)`,
               }}
             >
-              <p className="text-3xl font-bold text-cyan-300 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)]">
+              <p className="text-2xl font-bold text-cyan-300 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)] sm:text-3xl">
                 100+ Generated LPs
               </p>
               <p className="text-muted-foreground text-sm">生成LP</p>
@@ -87,7 +87,7 @@ export default function HeroSection() {
                 transform: `translate(${mouseParallax.x}px, ${mouseParallax.y}px)`,
               }}
             >
-              <p className="text-3xl font-bold text-cyan-300 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)]">
+              <p className="text-2xl font-bold text-cyan-300 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)] sm:text-3xl">
                 AI Powered
               </p>
               <p className="text-muted-foreground text-sm">Powered</p>
@@ -98,7 +98,7 @@ export default function HeroSection() {
                 transform: `translate(${mouseParallax.x}px, ${mouseParallax.y}px)`,
               }}
             >
-              <p className="text-3xl font-bold text-cyan-300 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)]">
+              <p className="text-2xl font-bold text-cyan-300 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)] sm:text-3xl">
                 24/7 Available
               </p>
               <p className="text-muted-foreground text-sm">Available</p>
