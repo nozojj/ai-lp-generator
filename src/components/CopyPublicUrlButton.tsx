@@ -13,7 +13,7 @@ export default function CopyPublicUrlButton({ id }: { id: string }) {
 
   return (
     <Button
-      className="h-11 w-full"
+      className="h-11 w-full px-5"
       type="button"
       variant="outline"
       onClick={handleCopy}

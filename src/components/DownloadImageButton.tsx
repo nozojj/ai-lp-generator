@@ -49,7 +49,7 @@ export default function DownloadImageButton({
       variant="outline"
       onClick={handleDownload}
       disabled={loading}
-      className="h-11 w-full"
+      className="h-11 w-full px-5"
     >
       <ImageDown className="mr-2 h-4 w-4" />
       {loading ? "ダウンロード中..." : "画像をダウンロード"}

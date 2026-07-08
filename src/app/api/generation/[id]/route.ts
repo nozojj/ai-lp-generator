@@ -26,7 +26,17 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
 
-    if (typeof body.isFavorite !== "boolean") {
+    const data: { isFavorite?: boolean; isPublished?: boolean } = {};
+
+    if (typeof body.isFavorite === "boolean") {
+      data.isFavorite = body.isFavorite;
+    }
+
+    if (typeof body.isPublished === "boolean") {
+      data.isPublished = body.isPublished;
+    }
+
+    if (Object.keys(data).length === 0) {
       return NextResponse.json({ error: "Invalid body" }, { status: 400 });
     }
 
@@ -48,12 +58,13 @@ export async function PATCH(
       where: {
         id,
       },
-      data: {
-        isFavorite: body.isFavorite,
-      },
+      data,
     });
 
-    return NextResponse.json({ isFavorite: updated.isFavorite });
+    return NextResponse.json({
+      isFavorite: updated.isFavorite,
+      isPublished: updated.isPublished,
+    });
   } catch (error) {
     console.error(error);
 

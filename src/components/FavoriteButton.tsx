@@ -55,7 +55,7 @@ export default function FavoriteButton({
     >
       <Star
         className={cn(
-          "h-5 w-5 transition-colors",
+          "h-4 w-4 transition-colors",
           isFavorite
             ? "fill-yellow-400 text-yellow-400"
             : "text-muted-foreground",

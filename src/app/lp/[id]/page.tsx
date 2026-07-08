@@ -16,7 +16,7 @@ export async function generateMetadata({
     },
   });
 
-  if (!item) {
+  if (!item || !item.isPublished) {
     return {
       title: "LP Not Found",
     };
@@ -54,7 +54,7 @@ export default async function LpPage({
     },
   });
 
-  if (!item) {
+  if (!item || !item.isPublished) {
     notFound();
   }
 
