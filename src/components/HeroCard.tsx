@@ -3,14 +3,11 @@ import { Menu } from "lucide-react";
 import AuthButtons from "./auth-button";
 import HeroBackground from "./HeroBackground";
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "./ui/drawer";
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "./ui/popover";
 
 type Props = {
   mouseParallax: {
@@ -60,8 +57,8 @@ export default function HeroCard({ mouseParallax }: Props) {
                 <AuthButtons />
               </div>
 
-              <Drawer direction="right">
-                <DrawerTrigger asChild>
+              <Popover>
+                <PopoverTrigger asChild>
                   <button
                     type="button"
                     aria-label="メニューを開く"
@@ -69,33 +66,31 @@ export default function HeroCard({ mouseParallax }: Props) {
                   >
                     <Menu size={22} />
                   </button>
-                </DrawerTrigger>
+                </PopoverTrigger>
 
-                <DrawerContent className="border-white/10 bg-zinc-950/95 text-zinc-100 backdrop-blur-xl">
-                  <DrawerHeader>
-                    <DrawerTitle className="text-zinc-100">
-                      AI LP Generator
-                    </DrawerTitle>
-                  </DrawerHeader>
-
-                  <nav className="flex flex-col gap-1 px-4">
+                <PopoverContent
+                  align="end"
+                  sideOffset={12}
+                  className="w-56 border-white/10 bg-zinc-950/70 p-2 text-zinc-100 backdrop-blur-xl"
+                >
+                  <nav className="flex flex-col gap-1">
                     {navLinks.map((link) => (
-                      <DrawerClose key={link.href} asChild>
+                      <PopoverClose key={link.href} asChild>
                         <Link
                           href={link.href}
-                          className="rounded-lg px-3 py-3 text-base text-zinc-200 hover:bg-white/5 hover:text-white"
+                          className="rounded-lg px-3 py-2 text-sm text-zinc-200 hover:bg-white/10 hover:text-white"
                         >
                           {link.label}
                         </Link>
-                      </DrawerClose>
+                      </PopoverClose>
                     ))}
                   </nav>
 
-                  <DrawerFooter>
+                  <div className="mt-2 border-t border-white/10 pt-2">
                     <AuthButtons />
-                  </DrawerFooter>
-                </DrawerContent>
-              </Drawer>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
           <div className="relative h-105 sm:h-120 md:h-140">
