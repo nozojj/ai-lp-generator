@@ -44,7 +44,7 @@ export default function DeleteButton({ id }: { id: string }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" className="h-11 w-full font-medium">
+        <Button variant="destructive" className="h-11 w-full px-5 font-medium">
           <Trash2 className="mr-2 h-4 w-4" />
           削除
         </Button>

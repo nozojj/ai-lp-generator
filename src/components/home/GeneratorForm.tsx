@@ -46,7 +46,10 @@ export default function GeneratorForm({
   handleGenerate,
 }: GeneratorFormProps) {
   return (
-      <Card className="mx-auto mt-6 max-w-xl rounded-3xl border border-cyan-500/20 bg-zinc-900/40 shadow-[0_20px_80px_rgba(34,211,238,.12)] backdrop-blur-xl">
+      <Card
+        id="generator"
+        className="mx-auto mt-6 max-w-xl scroll-mt-24 rounded-3xl border border-cyan-500/20 bg-zinc-900/40 shadow-[0_20px_80px_rgba(34,211,238,.12)] backdrop-blur-xl"
+      >
         <CardContent className="space-y-4 p-6">
           <div className="mb-6 flex items-center justify-between rounded-2xl border border-cyan-500/20 bg-cyan-500/5 px-4 py-3 backdrop-blur-xl">
             <div className="flex items-center gap-2">

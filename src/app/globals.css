@@ -160,3 +160,21 @@
 .flow-light {
   animation: flow 2s linear infinite;
 }
+
+@keyframes flow-slow {
+  0% {
+    transform: translateX(-40%);
+  }
+
+  50% {
+    transform: translateX(40%);
+  }
+
+  100% {
+    transform: translateX(-40%);
+  }
+}
+
+.flow-light-slow {
+  animation: flow-slow 8s ease-in-out infinite;
+}

@@ -1,8 +1,10 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
+import { Receipt } from "lucide-react";
 import CreditBalanceCard from "@/components/credits/CreditBalanceCard";
-import CreditHistoryItem from "@/components/credits/CreditHistoryItem";
+import CreditStats from "@/components/credits/CreditStats";
+import CreditHistoryTable from "@/components/credits/CreditHistoryTable";
 import { notFound } from "next/navigation";
 import PageHeader from "@/components/common/PageHeader";
 import EmptyState from "@/components/common/EmptyState";
@@ -48,17 +50,18 @@ export default async function CreditsPage() {
 
       <CreditBalanceCard credits={user.credits} />
 
+      <CreditStats history={history} isPro={user.isPro} />
+
       {history.length === 0 ? (
         <EmptyState
+          icon={Receipt}
           title="まだ履歴がありません"
-          description="LPを生成するとここに履歴が表示されます。"
+          description="LPを生成したりクレジットを購入すると、取引履歴がここに一覧表示されます。"
+          actionLabel="LPを生成する"
+          actionHref="/"
         />
       ) : (
-        <div className="space-y-4">
-          {history.map((item) => (
-            <CreditHistoryItem key={item.id} item={item} />
-          ))}
-        </div>
+        <CreditHistoryTable history={history} currentBalance={user.credits} />
       )}
     </main>
   );

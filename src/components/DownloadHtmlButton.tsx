@@ -21,7 +21,8 @@ export default function DownloadHtmlButton({ id }: { id: string }) {
     <Button
       onClick={handleDownload}
       disabled={loading}
-      className="h-11 w-full bg-indigo-600 hover:bg-indigo-500"
+      variant="outline"
+      className="h-11 w-full px-5"
     >
       {loading ? (
         "ダウンロード中..."

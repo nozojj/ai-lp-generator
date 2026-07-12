@@ -1,4 +1,3 @@
-import { Generation } from "@prisma/client";
 import { Button } from "../ui/button";
 import {
   Accordion,
@@ -15,14 +14,34 @@ import {
   HeartHandshake,
 } from "lucide-react";
 
+export type TemplateData = {
+  hero: string;
+  cta: string;
+  ctaUrl?: string | null;
+  features: unknown;
+  benefits: unknown;
+  faq?: unknown;
+  testimonials?: unknown;
+  imageUrl?: string | null;
+  template: string;
+};
+
 type Props = {
-  item: Generation;
+  item: TemplateData;
 };
 
 export default function Template({ item }: Props) {
   const isLuxury = item.template === "luxury";
   const isMinimal = item.template === "minimal";
   const isCorporate = item.template === "corporate";
+
+  const features = (item.features as string[] | undefined) ?? [];
+  const benefits = (item.benefits as string[] | undefined) ?? [];
+  const testimonials =
+    (item.testimonials as { name: string; comment: string }[] | undefined) ??
+    [];
+  const faqItems =
+    (item.faq as { question: string; answer: string }[] | undefined) ?? [];
 
   const icons = [Compass, ShieldCheck, Mountain];
 
@@ -135,7 +154,7 @@ export default function Template({ item }: Props) {
         <h2 className="mb-6 text-3xl font-bold">Features</h2>
 
         <div className="grid gap-4 md:grid-cols-3">
-          {(item.features as string[]).map((feature, index) => {
+          {features.map((feature, index) => {
             const Icon = icons[index % icons.length];
 
             return (
@@ -160,25 +179,24 @@ export default function Template({ item }: Props) {
         <h2 className="mb-6 text-3xl font-bold">Benefits</h2>
 
         <div className="space-y-4">
-          {item.benefits &&
-            (item.benefits as string[]).map((benefit, index) => {
-              const Icon = benefitIcons[index % benefitIcons.length];
+          {benefits.map((benefit, index) => {
+            const Icon = benefitIcons[index % benefitIcons.length];
 
-              return (
-                <div
-                  key={index}
-                  className={`${cardClass} p-6 transition duration-300 hover:-translate-y-2 md:p-8`}
-                >
-                  <Icon size={34} className="mb-4 text-cyan-400" />
+            return (
+              <div
+                key={index}
+                className={`${cardClass} p-6 transition duration-300 hover:-translate-y-2 md:p-8`}
+              >
+                <Icon size={34} className="mb-4 text-cyan-400" />
 
-                  <h3 className="mb-3 text-xl font-bold">{String(benefit)}</h3>
+                <h3 className="mb-3 text-xl font-bold">{String(benefit)}</h3>
 
-                  <p className="text-slate-400">
-                    AIが分析したおすすめポイントです。
-                  </p>
-                </div>
-              );
-            })}
+                <p className="text-slate-400">
+                  AIが分析したおすすめポイントです。
+                </p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -186,24 +204,18 @@ export default function Template({ item }: Props) {
         <h2 className="mb-6 text-3xl font-bold">お客様の声</h2>
 
         <div className="grid gap-6 md:grid-cols-3">
-          {item.testimonials &&
-            (
-              item.testimonials as {
-                name: string;
-                comment: string;
-              }[]
-            ).map((review, index) => (
-              <div
-                key={index}
-                className={`${cardClass} p-6 transition duration-300 hover:-translate-y-2 md:p-8`}
-              >
-                <p className="mb-4 text-yellow-400">★★★★★</p>
+          {testimonials.map((review, index) => (
+            <div
+              key={index}
+              className={`${cardClass} p-6 transition duration-300 hover:-translate-y-2 md:p-8`}
+            >
+              <p className="mb-4 text-yellow-400">★★★★★</p>
 
-                <p className="text-slate-300">「{review.comment}」</p>
+              <p className="text-slate-300">「{review.comment}」</p>
 
-                <p className="mt-4 font-bold">{review.name}</p>
-              </div>
-            ))}
+              <p className="mt-4 font-bold">{review.name}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -211,27 +223,21 @@ export default function Template({ item }: Props) {
         <h2 className="mb-6 text-3xl font-bold">FAQ</h2>
 
         <Accordion type="single" collapsible className="w-full">
-          {item.faq &&
-            (
-              item.faq as {
-                question: string;
-                answer: string;
-              }[]
-            ).map((faq, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className={`${cardClass} p-6 md:p-8`}
-              >
-                <AccordionTrigger className="text-left text-lg font-semibold">
-                  {faq.question}
-                </AccordionTrigger>
+          {faqItems.map((faq, index) => (
+            <AccordionItem
+              key={index}
+              value={`item-${index}`}
+              className={`${cardClass} p-6 md:p-8`}
+            >
+              <AccordionTrigger className="text-left text-lg font-semibold">
+                {faq.question}
+              </AccordionTrigger>
 
-                <AccordionContent className="leading-7 text-slate-300">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
+              <AccordionContent className="leading-7 text-slate-300">
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
         </Accordion>
       </section>
 
