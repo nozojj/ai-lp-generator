@@ -3,6 +3,10 @@
 AIを活用してランディングページ（LP）を自動生成・編集できるWebアプリです。
 業種・ターゲット・雰囲気を入力するだけで、コピーとヒーロー画像を数秒で生成し、そのまま編集・公開・ダウンロードまで行えます。
 
+## Demo
+
+🌐 https://ai-lp-generator-lemon.vercel.app/
+
 ## Overview
 
 - 生成したLPは編集・お気に入り登録・公開/非公開の切り替えが可能で、公開中のLPは固有URL（`/lp/[id]`）で共有できます
@@ -95,20 +99,54 @@ Prisma管理下のPostgreSQL（Supabase）に4テーブル構成です。
 
 （あとで画像を追加）
 
-## Demo
+## Development Status
 
-デプロイURL：
-https://ai-lp-generator-lemon.vercel.app/
+🚧 Work in Progress
 
+### Completed
+
+- Dashboard
+- History
+- LP Preview
+- LP Edit
+- Settings
+- Pricing
+- Theme Toggle
+- ZIP Download
+- Responsive Design
+
+### Planned
+
+- Stripe Subscription
+- Pro Plan
+- Analytics
+- More Templates
+- PDF Export
+  
 ## セットアップ
 
 ```bash
-git clone ...
+git clone https://github.com/nozojj/ai-lp-generator.git
+cd ai-lp-generator
 npm install
 npm run dev
 ```
 
 実行には `.env` に Clerk / OpenAI / Stability AI / Supabase / Stripe の各APIキーとDB接続情報（`DATABASE_URL`）を設定してください。
+
+## Environment Variables
+
+Create `.env.local`
+
+```env
+DATABASE_URL=
+OPENAI_API_KEY=
+STABILITY_API_KEY=
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+OWNER_CLERK_ID=
+```
 
 ## Future
 
