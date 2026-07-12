@@ -1,6 +1,16 @@
 import Link from "next/link";
+import { Menu } from "lucide-react";
 import AuthButtons from "./auth-button";
 import HeroBackground from "./HeroBackground";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "./ui/drawer";
 
 type Props = {
   mouseParallax: {
@@ -8,6 +18,13 @@ type Props = {
     y: number;
   };
 };
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/history", label: "History" },
+  { href: "/pricing", label: "Pricing" },
+];
 
 export default function HeroCard({ mouseParallax }: Props) {
   return (
@@ -31,14 +48,54 @@ export default function HeroCard({ mouseParallax }: Props) {
                 </h2>
 
                 <div className="hidden gap-6 text-sm text-zinc-300 md:flex">
-                  <Link href="/">Home</Link>
-                  <Link href="/dashboard">Dashboard</Link>
-                  <Link href="/history">History</Link>
-                  <Link href="/pricing">Pricing</Link>
+                  {navLinks.map((link) => (
+                    <Link key={link.href} href={link.href}>
+                      {link.label}
+                    </Link>
+                  ))}
                 </div>
               </div>
 
-              <AuthButtons />
+              <div className="hidden md:block">
+                <AuthButtons />
+              </div>
+
+              <Drawer direction="right">
+                <DrawerTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label="メニューを開く"
+                    className="rounded-lg p-2 text-zinc-300 hover:text-white md:hidden"
+                  >
+                    <Menu size={22} />
+                  </button>
+                </DrawerTrigger>
+
+                <DrawerContent className="border-white/10 bg-zinc-950/95 text-zinc-100 backdrop-blur-xl">
+                  <DrawerHeader>
+                    <DrawerTitle className="text-zinc-100">
+                      AI LP Generator
+                    </DrawerTitle>
+                  </DrawerHeader>
+
+                  <nav className="flex flex-col gap-1 px-4">
+                    {navLinks.map((link) => (
+                      <DrawerClose key={link.href} asChild>
+                        <Link
+                          href={link.href}
+                          className="rounded-lg px-3 py-3 text-base text-zinc-200 hover:bg-white/5 hover:text-white"
+                        >
+                          {link.label}
+                        </Link>
+                      </DrawerClose>
+                    ))}
+                  </nav>
+
+                  <DrawerFooter>
+                    <AuthButtons />
+                  </DrawerFooter>
+                </DrawerContent>
+              </Drawer>
             </div>
           </div>
           <div className="relative h-105 sm:h-120 md:h-140">
