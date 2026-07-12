@@ -5,6 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import { useRef } from "react";
 import * as THREE from "three";
+import { useIsCoarsePointer } from "@/hooks/useIsCoarsePointer";
 
 function Scene() {
   const light = useRef<THREE.PointLight>(null!);
@@ -171,9 +172,27 @@ function FloatingOrb() {
 }
 
 export default function HeroBackground() {
+  const isCoarsePointer = useIsCoarsePointer();
+
+  // WebGL + postprocessing behind backdrop-blur layers is a known iOS Safari
+  // crash trigger, and uncapped DPR blows up the Bloom framebuffer on
+  // Retina phones. Fall back to a cheap CSS gradient on touch/small screens.
+  if (isCoarsePointer) {
+    return (
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 bg-linear-to-br from-cyan-500/20 via-blue-600/10 to-transparent" />
+        <div className="absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/20 blur-3xl" />
+      </div>
+    );
+  }
+
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
+      <Canvas
+        camera={{ position: [0, 0, 8], fov: 50 }}
+        dpr={[1, 1.5]}
+        gl={{ antialias: false, powerPreference: "high-performance" }}
+      >
         <Scene />
       </Canvas>
     </div>
