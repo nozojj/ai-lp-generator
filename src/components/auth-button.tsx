@@ -20,7 +20,7 @@ export default function AuthButtons() {
       </SignInButton>
 
       <SignUpButton mode="modal">
-        <button className="rounded-lg bg-card px-2.5 py-1.5 text-xs whitespace-nowrap text-black sm:px-4 sm:py-2 sm:text-sm">
+        <button className="rounded-lg bg-white px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap text-black shadow-[0_0_16px_rgba(34,211,238,.35)] hover:bg-zinc-100 sm:px-4 sm:py-2 sm:text-sm">
           Sign up
         </button>
       </SignUpButton>
