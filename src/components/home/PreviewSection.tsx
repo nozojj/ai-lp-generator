@@ -61,27 +61,27 @@ export default function PreviewSection({
             }}
           >
             <Card className="overflow-hidden rounded-3xl border border-cyan-500/30 bg-zinc-950/80 shadow-[0_0_70px_rgba(34,211,238,.25)] backdrop-blur-xl">
-              <div className="flex items-center justify-between border-b border-cyan-500/20 bg-zinc-900/80 px-5 py-3">
+              <div className="flex items-center justify-between gap-3 border-b border-cyan-500/20 bg-zinc-900/80 px-3 py-3 sm:px-5">
                 {/* 左：Mac風ボタン */}
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 items-center gap-2">
                   <div className="h-3 w-3 rounded-full bg-red-500" />
                   <div className="h-3 w-3 rounded-full bg-yellow-400" />
                   <div className="h-3 w-3 rounded-full bg-green-500" />
                 </div>
 
                 {/* 真ん中：URLバー */}
-                <div className="flex w-[420px] items-center justify-center rounded-full border border-cyan-500/20 bg-zinc-800 px-4 py-1 text-xs text-zinc-500">
+                <div className="flex min-w-0 flex-1 items-center justify-center overflow-hidden rounded-full border border-cyan-500/20 bg-zinc-800 px-4 py-1 text-xs text-nowrap text-ellipsis text-zinc-500 sm:max-w-105">
                   https://generated-ai-lp.vercel.app
                 </div>
 
                 {/* 右：ダミーアイコン */}
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-cyan-400/60" />
                   <div className="h-2 w-2 rounded-full bg-cyan-400/30" />
                 </div>
               </div>
 
-              <CardContent className="grid items-center gap-12 p-14 md:grid-cols-[1.2fr_1fr]">
+              <CardContent className="grid items-center gap-8 p-6 sm:p-10 md:grid-cols-[1.2fr_1fr] md:gap-12 md:p-14">
                 <div className="text-center md:text-left">
                   <p className="mb-3 flex items-center justify-center gap-2 text-sm font-medium text-cyan-300 md:justify-start">
                     {isLive && (
@@ -95,7 +95,7 @@ export default function PreviewSection({
                   </p>
 
                   <h1
-                    className={`max-w-xl bg-gradient-to-r ${theme.heroGradient} bg-clip-text text-5xl leading-tight font-bold text-transparent drop-shadow-[0_0_25px_rgba(34,211,238,.25)] md:text-6xl`}
+                    className={`max-w-xl bg-gradient-to-r ${theme.heroGradient} bg-clip-text text-3xl leading-tight font-bold text-transparent drop-shadow-[0_0_25px_rgba(34,211,238,.25)] sm:text-5xl md:text-6xl`}
                   >
                     {heroWords.map((char, index) => (
                       <motion.span
@@ -132,7 +132,7 @@ export default function PreviewSection({
                   </p>
                   <div className="mt-10 flex justify-center md:justify-start">
                     <Button
-                      className={`group relative mt-10 h-16 rounded-2xl bg-gradient-to-r ${theme.ctaGradient} px-12 text-xl font-bold shadow-[0_0_40px_rgba(34,211,238,.45)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_70px_rgba(34,211,238,.8)]`}
+                      className={`group relative mt-10 h-12 rounded-2xl bg-gradient-to-r ${theme.ctaGradient} px-6 text-base font-bold shadow-[0_0_40px_rgba(34,211,238,.45)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_70px_rgba(34,211,238,.8)] sm:h-16 sm:px-12 sm:text-xl`}
                       style={{
                         boxShadow: `0 0 40px ${theme.glow}`,
                       }}

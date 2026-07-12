@@ -26,7 +26,7 @@ export default function HeroCard({ mouseParallax }: Props) {
           <div className="absolute top-4 left-1/2 z-20 w-[92%] max-w-4xl -translate-x-1/2 sm:top-6">
             <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-zinc-900/40 px-4 py-3 backdrop-blur-xl md:px-8 md:py-4">
               <div className="flex items-center gap-4 md:gap-10">
-                <h2 className="text-base font-bold whitespace-nowrap sm:text-xl">
+                <h2 className="text-sm font-bold whitespace-nowrap sm:text-xl">
                   AI LP Generator
                 </h2>
 
