@@ -4,11 +4,11 @@ import DownloadHtmlButton from "@/components/DownloadHtmlButton";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Eye, Pencil, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import Template from "@/components/templates/Template";
 
 export default async function HistoryDetailPage({
   params,
@@ -81,18 +81,6 @@ ${
         ← 履歴一覧へ戻る
       </Link>
       <div className="space-y-6">
-        {item.imageUrl && (
-          <div className="border-border relative h-72 w-full overflow-hidden rounded-xl border">
-            <Image
-              src={item.imageUrl}
-              alt={item.hero}
-              fill
-              className="object-cover"
-              unoptimized
-            />
-          </div>
-        )}
-
         <div className="flex items-start justify-between gap-10">
           <div className="max-w-4xl flex-1">
             <PageHeader label="History" title={item.hero} />
@@ -136,62 +124,15 @@ ${
           </div>
         </div>
 
-        <div className="bg-card border-border rounded-xl border p-6">
-          <h2 className="mb-4 text-2xl font-bold">CTA</h2>
-
-          <p className="text-lg leading-8">{item.cta}</p>
-        </div>
-
-        <div className="bg-card border-border rounded-xl border p-6">
-          <h2 className="mb-4 text-2xl font-bold">Features</h2>
-
-          <div className="space-y-3">
-            {Array.isArray(item.features) &&
-              item.features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="bg-muted text-muted-foreground rounded-lg p-4"
-                >
-                  {String(feature)}
-                </div>
-              ))}
+        <div className="border-border overflow-hidden rounded-2xl border shadow-lg">
+          <div className="border-border bg-muted flex items-center gap-1.5 border-b px-4 py-3">
+            <span className="h-3 w-3 rounded-full bg-red-400" />
+            <span className="h-3 w-3 rounded-full bg-yellow-400" />
+            <span className="h-3 w-3 rounded-full bg-green-400" />
           </div>
-        </div>
-        <div className="bg-card border-border rounded-xl border p-6">
-          <h2 className="mb-4 text-xl font-bold">Benefits</h2>
 
-          <div className="space-y-3">
-            {Array.isArray(item.benefits) &&
-              item.benefits.map((benefit, index) => (
-                <div
-                  key={index}
-                  className="bg-muted text-muted-foreground rounded-lg p-4"
-                >
-                  {String(benefit)}
-                </div>
-              ))}
-          </div>
-        </div>
-        <div className="bg-card border-border rounded-xl border p-6">
-          <h2 className="mb-4 text-xl font-bold">FAQ</h2>
-
-          <div className="space-y-3">
-            {Array.isArray(item.faq) &&
-              (
-                item.faq as {
-                  question: string;
-                  answer: string;
-                }[]
-              ).map((faq, index) => (
-                <div
-                  key={index}
-                  className="bg-muted text-muted-foreground rounded-lg p-4"
-                >
-                  <p className="font-bold">Q. {faq.question}</p>
-
-                  <p className="text-muted-foreground mt-2">A. {faq.answer}</p>
-                </div>
-              ))}
+          <div className="max-h-200 overflow-y-auto">
+            <Template item={item} />
           </div>
         </div>
       </div>
