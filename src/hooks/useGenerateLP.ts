@@ -5,9 +5,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 import type { Result } from "@/types/result";
-import { previewResult } from "@/constants/preview-result";
 
-export function useGenerateLP(demoMode: boolean) {
+export function useGenerateLP() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
@@ -30,18 +29,6 @@ export function useGenerateLP(demoMode: boolean) {
     atmosphere: string,
     template: string,
   ) => {
-    if (demoMode) {
-      setLoading(true);
-      setActiveStep(0);
-
-      await new Promise((resolve) => setTimeout(resolve, 6000));
-
-      setResult(previewResult);
-      setLoading(false);
-
-      return;
-    }
-
     setActiveStep(0);
     setLoading(true);
 
