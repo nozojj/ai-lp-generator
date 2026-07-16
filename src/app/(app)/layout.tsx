@@ -8,7 +8,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <HeroBackground />
       </div>
 
-      <div className="relative z-10 flex w-full">
+      <div className="relative z-10 flex w-full flex-col md:flex-row">
         <Sidebar />
 
         <main className="relative flex-1">
