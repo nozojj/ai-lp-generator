@@ -25,9 +25,7 @@ export default function Home() {
 
   const { credits } = useCredits();
 
-  const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
-
-  const { loading, activeStep, result, generate } = useGenerateLP(DEMO_MODE);
+  const { loading, activeStep, result, generate } = useGenerateLP();
 
   const displayStep = useWorkflow();
 
@@ -53,12 +51,7 @@ export default function Home() {
       className="bg-background text-foreground relative min-h-screen overflow-hidden p-6"
       onMouseMove={handleMouseMove}
     >
-      <LoadingDialog
-        loading={loading}
-        activeStep={activeStep}
-        status={status}
-        demoMode={DEMO_MODE}
-      />
+      <LoadingDialog loading={loading} activeStep={activeStep} status={status} />
       <div className="absolute inset-0">
         <HeroBackground />
       </div>

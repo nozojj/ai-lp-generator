@@ -8,7 +8,6 @@ type LoadingDialogProps = {
   loading: boolean;
   activeStep: number;
   status: string[];
-  demoMode: boolean;
 };
 
 const STEP_LABELS = [
@@ -19,13 +18,7 @@ const STEP_LABELS = [
   "完成データを保存中",
 ];
 
-function LoadingDialogContent({
-  activeStep,
-  demoMode,
-}: {
-  activeStep: number;
-  demoMode: boolean;
-}) {
+function LoadingDialogContent({ activeStep }: { activeStep: number }) {
   const [percent, setPercent] = useState(0);
 
   useEffect(() => {
@@ -55,7 +48,7 @@ function LoadingDialogContent({
       <AiThinkingCore />
 
       <h2 className="mb-8 text-center text-2xl font-bold text-white">
-        {demoMode ? "🚀 Demo Generation" : "LPを生成しています..."}
+        LPを生成しています...
       </h2>
 
       {/* ステップ一覧 */}
@@ -94,12 +87,6 @@ function LoadingDialogContent({
         })}
       </div>
 
-      {demoMode && (
-        <div className="mb-6 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-center text-xs text-cyan-300">
-          🚀 Demo Mode（APIは呼び出していません）
-        </div>
-      )}
-
       {/* Progress Bar */}
       <div className="mb-3 h-2 overflow-hidden rounded-full bg-zinc-800">
         <motion.div
@@ -119,7 +106,6 @@ function LoadingDialogContent({
 export default function LoadingDialog({
   loading,
   activeStep,
-  demoMode,
 }: LoadingDialogProps) {
   return (
     <AnimatePresence>
@@ -132,7 +118,7 @@ export default function LoadingDialog({
         >
           <LoadingSpaceScene />
 
-          <LoadingDialogContent activeStep={activeStep} demoMode={demoMode} />
+          <LoadingDialogContent activeStep={activeStep} />
         </motion.div>
       )}
     </AnimatePresence>
